@@ -21,4 +21,7 @@ git push -u origin main
 - `origin` & `main` being arbitrary default names.
 
 # workflow
+**accessibility**
 - link your current working project folders into your `~` for easier access.
+**testing**
+- use `nm -u command` to check what functions are being called from libraries? //TODO: read up on this
