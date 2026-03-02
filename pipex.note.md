@@ -44,3 +44,5 @@ git push -u origin main
 typedef return_type (new_function_type)(function_param_type1, ...) // fnct
 typedef return_type (*new_function_type)(function_param_type1, ...) // fnct ptr
 ```
+**strategies to make structs lean**
+[https://youtu.be/IroPQ150F6c]()
