@@ -44,11 +44,9 @@ git push -u origin main
 typedef return_type (new_function_type)(function_param_type1, ...) // fnct
 typedef return_type (*new_function_type)(function_param_type1, ...) // fnct ptr
 ```
-<<<<<<< HEAD:pipex.note.md
 **strategies to make structs lean**
-[https://youtu.be/IroPQ150F6c]()
-[https://youtu.be/xt1KNDmOYqA]()
-=======
+[https://youtu.be/IroPQ150F6c](Andrew Kelley: A Practical Guide to Applying Data Oriented Design (DoD))
+[https://youtu.be/xt1KNDmOYqA](Casey Muratori | Smart-Pointers, RAII, ZII? Becoming an N+2 programmer)
 
 **intrusive list**
 [https://youtu.be/ShSGHb65f3M?si=QtZeka9lb9zKuevv&t=32](Avoiding Modern C++ | Anton Mikhailov - Wookash Podcast)
@@ -56,4 +54,3 @@ typedef return_type (*new_function_type)(function_param_type1, ...) // fnct ptr
 
 **user input**
 [https://youtu.be/ShSGHb65f3M?si=Owx_yWyx1AmNGvfL&t=6660](user input trick for opposing directions)
->>>>>>> ab56f70 (stuff i did at kians and on the way home):pipex.note.md_to_merge
