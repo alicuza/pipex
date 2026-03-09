@@ -31,7 +31,7 @@ git push -u origin main
 **accessibility**
 - link your current working project folders into your `~` for easier access.
 **testing**
-- use `nm -u command` to check what functions are being called from libraries? //TODO: read up on this
+- use `nm -u command` to check what functions are being called from libraries? // TODO: read up on this
 
 # man
 `man 2` - Linux Programmer's Manual
@@ -54,3 +54,27 @@ typedef return_type (*new_function_type)(function_param_type1, ...) // fnct ptr
 
 **user input**
 [https://youtu.be/ShSGHb65f3M?si=Owx_yWyx1AmNGvfL&t=6660](user input trick for opposing directions)
+
+## arenas
+### funcitons
+```c
+arena_init()	// allocate the backing buffer (malloc once)
+arena_alloc()	// bump the pointer, align, return a pointer
+arena_reset()	// set used back to 0, reuse the buffer
+//arena_save()	// save used for scratch patterns
+//arena_restore()	// restore used for scratch patterns
+arena_free()	// free the backing buffer
+```
+### alignment
+```c
+arena->used = (arena->used + 7) & ~7;	// aligning the next allocation position to 8 bytes.
+```
+
+**examples**
+```
+used = 13  →  13 + 7 = 20  →  20 & ~7 = 16
+used = 16  →  16 + 7 = 23  →  23 & ~7 = 16
+used = 17  →  17 + 7 = 24  →  24 & ~7 = 24
+```
+
+`~7` rounds to the 8-byte boundary.
