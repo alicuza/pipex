@@ -12,6 +12,8 @@
 
 #ifndef PIPEX_H
 # define PIPEX_H
+# include "libft.h"
+# include "arena.h"
 
 typedef enum e_token
 {
@@ -25,14 +27,14 @@ typedef enum e_token
 	TOK_RED_OUT,
 }	t_token;
 
-typedef struct s_thing
+typedef struct s_node
 {
 	t_token	type;
 	size_t	data_idx;
 	size_t	data_cnt;
 	size_t	sibling_idx;
 	size_t	child_idx;
-}	t_thing;
+}	t_node;
 
 typedef struct s_env
 {
