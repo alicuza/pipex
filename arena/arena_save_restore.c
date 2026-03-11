@@ -17,7 +17,7 @@ size_t	arena_save(t_arena *arena)
 	return (arena->used);
 }
 
-void	arena_restore(t_arena *arena, size_t saved_idx)
+void	arena_restore(t_arena *arena, size_t idx)
 {
-	arena->used = saved_idx;
+	arena->used = idx;
 }

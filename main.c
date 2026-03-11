@@ -16,24 +16,41 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_env	env;
 
+	if (argc < 5)
+	{
+		ft_printf("Error: too few arguments: usage: ./pipex [opt: \"here_doc\" LIMITER] infile cmd_1 cmd_2 [opt: cmd_3 ... cmd_n] outfile\n");
+		return (1); // think of error codes
+	}
+	env->argc = argc;
 	init_env(&env);
-	lex();
-	parse();
-	ft_split();
+	parse(&env);
+	execute(&env);
 }
 
-typedef struct s_thing
+void	init_env(t_env *env)
 {
-	t_token	type;
-	size_t	data_idx;
-	size_t	data_cnt;
-	size_t	sibling_idx;
-	size_t	child_idx;
-}	t_thing;
+	env = (t_env){0};
+	env->arena = arena_init(SIZE);
+	if (!env->arena)
+		handle_exit(env, EXIT_FAILURE, "init_env1");
 
-typedef struct s_env
-{
-	t_arena	nodes;
-	t_arena	tmp;
-	size_t	pipe_head;
-}	t_env;
+	if (!ft_strncmp(argv[1], "here_doc", 8))
+	{
+		env->node = malloc((argc - 4) * sizeof(t_node));
+		if (!env->node)
+			handle_exit(env, EXIT_FAILURE, "init_env2");
+		env->input_fd = STDIN_FILENO;
+		env->del = argv[2];
+	}
+	else
+	{
+		env->node = malloc((argc - 3) * sizeof(t_node));
+		if (!env->node)
+			handle_exit(env, EXIT_FAILURE, "init_env3");
+		env->input_fd = open(argv[1], O_RDONLY); // checking whether this worked happens in the child
+		env->output_fd = -1;
+	}
+	env->argc = argc;
+	env->argv = argv;
+	env->envp = envp;
+}

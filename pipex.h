@@ -14,32 +14,32 @@
 # define PIPEX_H
 # include "libft.h"
 # include "arena.h"
+# define SIZE 1024
 
-typedef enum e_token
+typedef enum e_type
 {
-	TOK_NIL,
-	TOK_AND,
-	TOK_OR,
-	TOK_PIPE,
-	TOK_WORD,
-	TOK_HERE_DOC,
-	TOK_RED_IN,
-	TOK_RED_OUT,
-}	t_token;
+	REDIR_IN,
+	REDIR_OUT,
+	NO_REDIR,
+}	t_type;
 
 typedef struct s_node
 {
-	t_token	type;
-	size_t	data_idx;
-	size_t	data_cnt;
-	size_t	sibling_idx;
-	size_t	child_idx;
+	size_t	argv_idx;
+	size_t	nbr;
+	t_type	type;
 }	t_node;
 
 typedef struct s_env
 {
-	t_arena	node_arena;
-	t_arena	string_arena;
-	size_t	pipe_head;
+	t_arena	*arena;
+	t_node	*node;
+	int		*argc;
+	char	**argv;
+	char	**envp;
+	int		pipe_fd[2];
+	int		input_fd;
+	int		output_fd;
 }	t_env;
+
 #endif

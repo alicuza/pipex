@@ -21,13 +21,12 @@ typedef struct s_arena
 	size_t	cap;
 }	t_arena;
 
-t_arena	arena_init(size_t nbr, size_t size);
-void	*arena_alloc(t_arena *arena, size_t nbr, size_t size);
-void	arena_reset(t_arena *arena);
+t_arena	arena_init(size_t cap);
+void	*arena_alloc(t_arena *arena, size_t size);
+void	*arena_array_alloc(t_arena *arena, size_t nbr, size_t size);
+void	arena_clear(t_arena *arena);
 size_t	arena_save(t_arena *arena);
-void	arena_restore(t_arena *arena, size_t saved_idx);
+void	arena_restore(t_arena *arena, size_t idx);
 void	arena_free(t_arena *arena);
 
 #endif
-
-

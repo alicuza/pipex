@@ -13,17 +13,15 @@
 #include "arena.h"
 #include <unistd.h>
 
-t_arena	arena_init(size_t nbr, size_t size)
+t_arena	arena_init(size_t size)
 {
 	t_arena	arena;
 
 	arena = (t_arena){0};
-	if (size && nbr > SIZE_MAX / size)
-		return (write(2, "capacity too high\n", 18), arena);
-	arena.cap = nbr * size;
-	arena.buf = malloc(arena.cap);
-	if (!arena.buf)
-		return (arena);
+	arena.buf = malloc(size);
+	ft_memset(arena.buf, 0, size);
+	if (arena.buf)
+		arena.cap = size;
 	return (arena);
 }
 
