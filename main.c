@@ -1,29 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/11 10:38:50 by sancuta          ###   ########.fr       */
+/*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
+/*   Updated: 2026/03/11 11:37:01 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "pipex.h"
 
-typedef enum e_token
+int	main(int argc, char **argv, char **envp)
 {
-	TOK_NIL,
-	TOK_AND,
-	TOK_OR,
-	TOK_PIPE,
-	TOK_WORD,
-	TOK_HERE_DOC,
-	TOK_RED_IN,
-	TOK_RED_OUT,
-}	t_token;
+	t_env	env;
+
+	init_env(&env);
+	lex();
+	parse();
+	ft_split();
+}
 
 typedef struct s_thing
 {
@@ -36,8 +33,7 @@ typedef struct s_thing
 
 typedef struct s_env
 {
-	t_arena	node_arena;
-	t_arena	string_arena;
+	t_arena	nodes;
+	t_arena	tmp;
 	size_t	pipe_head;
 }	t_env;
-#endif

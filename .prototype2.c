@@ -25,13 +25,13 @@ int main(int argc, char** argv, char **env)
         {"grep", "fane", NULL},
         {"wc", "-c", NULL},
     };
-    
+
     input_fd = open(infile_path, O_RDONLY);
     i = 0;
     while(i < nbr_cmds)
     {
         if (i == nbr_cmds - 1)
-            output_fd = open(outfile_path, O_CREAT | O_WRONLY | O_APPEND, 0644);
+            output_fd = open(outfile_path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
         else
         {
             pipe(pipe_fd);
@@ -52,7 +52,9 @@ int main(int argc, char** argv, char **env)
         input_fd = pipe_fd[0];
         i++;
     }
-    waitpid(child_pid, NULL, 0);
+	i = 0;
+	while (i < nbr_cmds)
+	    waitpid(child_pid, NULL, 0);
     close(input_fd);
     return (0);
 }

@@ -13,6 +13,16 @@
 if a command is not found in PATH, bash looks for `function command_not_found_handle()` and executes it, otherwise it returns an error: [https://www.gnu.org/software/bash/manual/bash.html#Command-Search-and-Execution](Bash Reference Manual - Command, Search and Execution).
 **PARSING**
 [https://mywiki.wooledge.org/BashParser](Bash Parsing).
+# vim
+## config
+- use `ctag -R .` in the project root -> generates `tags` file
+- in vim now:
+	- `n_Ctrl-]` or `n_:tj`	// jumps to definition
+	- `n_Ctrl-o`			// jumps back to origin
+	- `n_:ts`				// opens list of possibilities
+- include autohook in ~/.vimrc or in the project's local .vimrc:
+`autocmd BufWritePost * if filereadable('./tags') | silent! execute "!ctags -R . &" | endif`
+
 # git
 ## commands
 **create remote repo from cli for gitlab.com**
