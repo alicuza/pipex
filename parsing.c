@@ -13,25 +13,14 @@
 #include "libft.h"
 #include "arena.h"
 
-// pass argc or argc-1 from main and handle accordingly
-
-int	handle_args(t_arena *arena, int argc, const char **argv)
-{
-	int	i;
-
-	i = 1;
-	while (i < argc)
-	{
-		parse_cmd(argv[i]);
-	}
-	return (0);
-}
-
-int	parse_cmd(t_arena *arena, const char *arg)
+int	parse_to_node(t_env *env, char **argv)
 {
 	int	idx;
+	int	i;
 
-	idx = ft_indchr(arg, ' ');
-	ft_strdup()
+	i = -1;
+	while (++i < env->node_cnt)
+	idx = ft_indchr(env->in_argv, ' ');
+	;
 	return (0);
 }

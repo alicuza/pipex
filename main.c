@@ -23,34 +23,37 @@ int	main(int argc, char **argv, char **envp)
 	}
 	env->argc = argc;
 	init_env(&env);
-	parse(&env);
-	execute(&env);
+	parse_to_node(&env);
+	execute_cmd(&env);
 }
 
-void	init_env(t_env *env)
+void	init_env(t_env *env, int argc, char **argv, char** envp)
 {
 	env = (t_env){0};
 	env->arena = arena_init(SIZE);
 	if (!env->arena)
 		handle_exit(env, EXIT_FAILURE, "init_env1");
+	env->output_fd = -1; // gets assigned in the cmd while loop
+	init_nodes(env, argc);
+}
 
+void	init_nodes(t_env *env, int argc)
+{
 	if (!ft_strncmp(argv[1], "here_doc", 8))
 	{
-		env->node = malloc((argc - 4) * sizeof(t_node));
+		env->node_cnt = argc - 4;
+		env->node = malloc(env->node_cnt * sizeof(t_node));
 		if (!env->node)
-			handle_exit(env, EXIT_FAILURE, "init_env2");
-		env->input_fd = STDIN_FILENO;
+			handle_exit(env, EXIT_FAILURE, "init_nodes1");
+		env->input_fd = STDIN;
 		env->del = argv[2];
 	}
 	else
 	{
-		env->node = malloc((argc - 3) * sizeof(t_node));
+		env->node_cnt = argc - 3;
+		env->node = malloc(env->node_cnt * sizeof(t_node));
 		if (!env->node)
-			handle_exit(env, EXIT_FAILURE, "init_env3");
+			handle_exit(env, EXIT_FAILURE, "init_nodes2");
 		env->input_fd = open(argv[1], O_RDONLY); // checking whether this worked happens in the child
-		env->output_fd = -1;
 	}
-	env->argc = argc;
-	env->argv = argv;
-	env->envp = envp;
 }

@@ -15,6 +15,10 @@
 # include "libft.h"
 # include "arena.h"
 # define SIZE 1024
+# define STDIN 0
+# define STDOUT 1
+# define PIPEIN 1
+# define PIPEOUT 0
 
 typedef enum e_type
 {
@@ -34,10 +38,11 @@ typedef struct s_env
 {
 	t_arena	*arena;
 	t_node	*node;
-	int		*argc;
-	char	**argv;
-	char	**envp;
+	int		*in_argc;
+	char	**in_argv;
+	char	**in_envp;
 	int		pipe_fd[2];
+	int		node_cnt;
 	int		input_fd;
 	int		output_fd;
 }	t_env;
