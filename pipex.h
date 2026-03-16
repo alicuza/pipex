@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/15 19:45:18 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/16 15:13:15 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,17 @@
 
 typedef enum e_type
 {
-	ARG,
 	REDIR_IN,
 	REDIR_OUT,
 	PIPE,
+	HERE_DOC,
 }	t_type;
 
 typedef struct s_node
 {
-	int		data_idx;
-	int		size;
-	int		sibling_idx;
-	int		child_idx;
+	size_t		data_idx;
+	size_t		arg_cnt;
+	size_t		next_idx;
 	t_type	type;
 }	t_node;
 
@@ -47,4 +46,5 @@ typedef struct s_env
 	int		output_fd;
 }	t_env;
 
+size_t	get_cmdv(t_arena *dest, size_t start_idx, size_t arg_cnt);
 #endif

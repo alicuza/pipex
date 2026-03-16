@@ -88,3 +88,6 @@ used = 17  →  17 + 7 = 24  →  24 & ~7 = 24
 ```
 
 `~7` rounds to the 8-byte boundary.
+
+# Resources
+- [https://www.zvab.com/servlet/SearchResults?ch_sort=t&cm_sp=sort-_-SRP-_-Results&ds=20&dym=on&kn=W.%20Richard%20Stevens%20-%20Advanced%20Programming%20in%20the%20Unix%20Environment&rollup=on&sortby=18](W. Richard Stevens - Advanced Programming in the Unix Environment)
