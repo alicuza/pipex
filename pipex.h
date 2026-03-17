@@ -6,14 +6,16 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/16 15:13:15 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/17 12:48:32 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
-# include "libft.h"
-# include "arena.h"
+# include "libft/libft.h"
+# include "libft/ft_printf.h"
+# include "arena/arena.h"
+# include <fcntl.h>
 # define SIZE 1024
 # define STDIN 0
 # define STDOUT 1
@@ -40,11 +42,17 @@ typedef struct s_env
 {
 	t_arena	*data;
 	t_node	*node;
+	size_t	hd_del_idx;
+	size_t	node_cnt;
 	int		pipe_fd[2];
-	int		node_cnt;
 	int		input_fd;
 	int		output_fd;
 }	t_env;
 
-size_t	get_cmdv(t_arena *dest, size_t start_idx, size_t arg_cnt);
+size_t	get_cmdv_idx(t_arena *dest, size_t start_idx, size_t arg_cnt);
+size_t	word_len(const char *s, char del); // SHOULD BE IN LIBFT
+size_t	count_words(const char *s, char del); // MOVE TO LIBFT
+void	*ft_print_memory(void *addr, unsigned int size); // MOVE TO LIBFT
+//void	handle_exit(t_env *env, int status, char *message);
+void	parse_to_nodes(t_env *env, char **argv);
 #endif

@@ -6,24 +6,26 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 13:58:40 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/09 12:30:57 by sancuta          ###   ########.fr       */
+/*   Updated: 2025/10/13 18:17:08 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_str *ft_strjoin(t_arena *arena, t_str *s1, t_str *s2)
+char	*ft_strjoin(const char *s1, const char *s2)
 {
-	t_str	*res;
-	size_t	total_size;
+	char	*res;
+	size_t	len;
+	size_t	total_len;
 
 	if (!s1 || !s2)
 		return (NULL);
-	total_size = s1->used + s2->used + 1;
-	res = arena_alloc(total_size + sizeof(size_t));
+	len = ft_strlen(s1);
+	total_len = len + ft_strlen(s2);
+	res = malloc(total_len + 1);
 	if (!res)
 		return (NULL);
-	ft_strlcpy(res, s1->data, total_size);
-	ft_strlcat(res, s2->data, total_size);
+	ft_strlcpy(res, s1, total_len + 1);
+	ft_strlcat(res, s2, total_len + 1);
 	return (res);
 }

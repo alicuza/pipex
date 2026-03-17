@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 20:05:14 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/16 15:56:35 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/17 12:55:36 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ size_t	arena_memcpy(t_arena *dest, const void *src, size_t size)
 	size_t	offset;
 
 	offset = arena_alloc(dest, size);
-	ft_memcpy(dest + offset, src, size);
+	ft_memcpy(dest->buf + offset, src, size);
 	return (offset);
 }
 
@@ -26,7 +26,7 @@ size_t	arena_memset(t_arena *data, int c, size_t size)
 	size_t	offset;
 
 	offset = arena_alloc(data, size);
-	ft_memset(data + offset, c, size);
+	ft_memset(data->buf + offset, c, size);
 	return (offset);
 }
 
@@ -35,11 +35,11 @@ size_t	arena_strlcpy(t_arena *dest, const void *src, size_t size)
 	size_t	offset;
 
 	offset = arena_alloc(dest, size);
-	ft_strlcpy(dest + offset, src, size);
+	ft_strlcpy(dest->buf + offset, src, size);
 	return (offset);
 }
 
-static size_t	count_words(const char *s, char del)
+size_t	count_words(const char *s, char del)
 {
 	size_t	i;
 	size_t	count;
@@ -55,7 +55,7 @@ static size_t	count_words(const char *s, char del)
 	return (count);
 }
 
-static size_t	word_len(const char *s, char del)
+size_t	word_len(const char *s, char del)
 {
 	size_t	i;
 
@@ -83,10 +83,12 @@ size_t	arena_split(t_arena *dest, const char *src, char del)
 			src++;
 		len = word_len(src, del);
 		dest->buf[tmp_offset]
-			= arena_strlcpy(dest, (len + 1) * sizeof(char));
+			= arena_strlcpy(dest, src, (len + 1) * sizeof(char));
 		src += len + 1;
 		tmp_offset += sizeof(size_t);
 	}
 	dest->buf[tmp_offset] = arena_memset(dest, 0, sizeof(NULL)); // NULL ptr as terminator
 	return (offset);
 }
+
+
