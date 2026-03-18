@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/18 14:17:16 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/18 18:08:16 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ int	main(int argc, char **argv, char **envp)
 	for (size_t i = 0; i < env.node_cnt; i++)
 	{
 		char **cmdv = (char **)(env.data->buf + env.node[i].data_idx);
-		for (size_t k = 0; cmdv[k]; k++)
-			    printf("node[%zu] argv[%zu]=%s\n", i, k, cmdv[k]);
+		for (size_t j = 0; cmdv[k]; j++)
+			    printf("node[%zu] argv[%zu]=%s\n", i, j, cmdv[j]);
 	}
 
 	ft_print_memory(env.data->buf, 800);

@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 09:41:35 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/17 12:53:48 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/18 18:06:00 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ size_t	arena_split(t_arena *dest, const char *src, char del);
 size_t	arena_save(t_arena *arena);
 void	arena_restore(t_arena *arena, size_t idx);
 void	arena_free(t_arena *arena);
+void	*get_arena_ptr(t_arena *arena, size_t idx);
 
 void	handle_exit(int status, char *message);
 #endif
