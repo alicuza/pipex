@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 11:17:00 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/18 13:33:08 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/18 14:19:02 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ size_t	get_start_idx(t_env *env)
 	if (env->input_fd == STDIN)
 	{
 		env->node[0].type = HERE_DOC;
-		start_idx = 4;
+		start_idx = 3;
 	}
 	else
 	{
 		env->node[0].type = REDIR_IN;
-		start_idx = 3;
+		start_idx = 2;
 	}
 	return (start_idx);
 }
@@ -38,7 +38,8 @@ void	parse_to_nodes(t_env *env, char **argv)
 
 	start_idx = get_start_idx(env);
 	env->node[0].data_idx = arena_split(env->data, argv[start_idx], WORD_DEL);
-	i = -1;
+	start_idx++;
+	i = 0;
 	while (++i < env->node_cnt - 1)
 	{
 		env->node[i].type = PIPE;
