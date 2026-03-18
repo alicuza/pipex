@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 20:05:14 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/18 18:03:50 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/18 18:46:12 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ size_t	arena_split(t_arena *dest, const char *src, char del)
 		while (*src == del)
 			src++;
 		len = word_len(src, del);
-		((char **)(dest->buf + offset))[i] = dest->buf + arena_strlcpy(dest, src, (len + 1) * sizeof(char));
+		((char **)(dest->buf + offset))[i] = dest->buf + arena_strlcpy(dest, src, (len + 1) * sizeof(char)); // think about returning the offset & rewriting the get_cmdv function
 		src += len;
 		i++;
 	}
@@ -88,7 +88,7 @@ size_t	arena_split(t_arena *dest, const char *src, char del)
 	return (offset);
 }
 
-char	*get_arena_ptr(t_arena *arena, size_t idx)
+void	*get_arena_ptr(t_arena *arena, size_t idx)
 {
 	return (arena->buf + idx);
 }

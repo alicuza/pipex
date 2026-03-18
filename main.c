@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/18 18:08:16 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/18 19:30:54 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 // because there are no allocations happening after the initialisation
 void	init_nodes(t_env *env, int argc, char **argv)
 {
-	if (!ft_strncmp(argv[1], "here_doc", 8))
+	if (!ft_strncmp(argv[1], "here_doc", 8)) // maybe think of a more robust way of checking for here_doc, ex: " here_doc" would fail here.
 	{
 		env->node_cnt = argc - 4;
 		env->node = malloc(env->node_cnt * sizeof(t_node));
@@ -64,7 +64,7 @@ int	main(int argc, char **argv, char **envp)
 	for (size_t i = 0; i < env.node_cnt; i++)
 	{
 		char **cmdv = (char **)(env.data->buf + env.node[i].data_idx);
-		for (size_t j = 0; cmdv[k]; j++)
+		for (size_t j = 0; cmdv[j]; j++)
 			    printf("node[%zu] argv[%zu]=%s\n", i, j, cmdv[j]);
 	}
 

@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/17 12:48:32 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/18 18:51:01 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@
 
 typedef enum e_type
 {
+	PIPE,
 	REDIR_IN,
 	REDIR_OUT,
-	PIPE,
 	HERE_DOC,
 }	t_type;
 
@@ -34,7 +34,6 @@ typedef struct s_node
 {
 	size_t		data_idx;
 	size_t		arg_cnt;
-	size_t		next_idx;
 	t_type	type;
 }	t_node;
 
