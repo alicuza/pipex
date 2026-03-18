@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/17 13:05:54 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/18 10:58:06 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,8 @@ t_env	init_env(int argc, char **argv, char** envp)
 {
 	(void) envp; // for testing, as of now unused
 	t_env	env;
-	t_arena	arena;
 
 	env = (t_env){0};
-	arena = arena_init(SIZE);
 	env.output_fd = -1; // gets assigned in the cmd while loop
 	init_nodes(&env, argc, argv);
 	return (env);

@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 11:17:00 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/17 12:47:54 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/18 12:35:17 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ size_t	get_cmdv_idx(t_arena *dest, size_t start_idx, size_t arg_cnt)
 	char	*src;
 	size_t	len;
 
-	src = &dest->buf[start_idx];
+	src = &dest->buf[start_idx * sizeof(size_t)];
+//	src = &dest->buf[start_idx * sizeof(size_t)];
 	len = ft_strlen(src);
 	offset = arena_memcpy(dest, src, (arg_cnt + 1) * sizeof(char *));
 	tmp_offset = offset;
@@ -63,7 +64,7 @@ void	parse_to_nodes(t_env *env, char **argv)
 	env->node[0].data_idx = get_cmdv_idx(env->data,
 				arena_split(env->data, argv[start_idx], WORD_DEL),
 				count_words(argv[start_idx], WORD_DEL));
-	i = 0;
+	i = -1;
 	while (++i < env->node_cnt - 1)
 	{
 		env->node[i].type = PIPE;

@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 08:36:13 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/17 13:02:21 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/18 11:00:36 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,11 @@ t_arena	arena_init(size_t size)
 
 	arena = (t_arena){0};
 //	errno = 0; // dont't forget about this bad boy
-	arena.buf = malloc(size + 8);
+	arena.buf = malloc(size); // if i want to put a zii stub at the beginning, should i add another 8 bytes for it?
 	if (!arena.buf)
 		handle_exit(EXIT_FAILURE, "arena_init: malloc failed bro\n");
 	ft_memset(arena.buf, 0, size);
-	if (arena.buf)
-		arena.cap = size;
+	arena.cap = size;
 	return (arena);
 }
 
