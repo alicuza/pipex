@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/18 10:58:06 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/18 13:43:25 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,5 @@ int	main(int argc, char **argv, char **envp)
 	env = init_env(argc, argv, envp);
 	env.data = &arena;
 	parse_to_nodes(&env, argv);
-	ft_print_memory(env.data->buf, env.data->cap);
+	ft_print_memory(env.data->buf, 200);
 }
