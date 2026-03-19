@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/18 18:51:01 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/19 11:11:28 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_env
 	int		pipe_fd[2];
 	int		input_fd;
 	int		output_fd;
+	int		last_status;
 }	t_env;
 
 size_t	get_cmdv_idx(t_arena *dest, size_t start_idx, size_t arg_cnt);
