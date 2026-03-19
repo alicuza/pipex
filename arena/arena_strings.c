@@ -6,13 +6,13 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 20:05:14 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/19 10:04:51 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/19 11:51:48 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "arena.h"
 
-size_t	arena_strcpy_del(t_arena *dest, const void *src, char del)
+/*size_t	arena_strcpy_del(t_arena *dest, const void *src, char del)
 {
 	size_t	offset;
 	size_t	len;
@@ -21,7 +21,7 @@ size_t	arena_strcpy_del(t_arena *dest, const void *src, char del)
 	offset = arena_alloc(dest, len + 1);
 	ft_strlcpy(dest->buf + offset, src, len + 1);
 	return (offset);
-}
+}*/
 
 size_t	arena_memcpy(t_arena *dest, const void *src, size_t size)
 {
