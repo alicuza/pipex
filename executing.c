@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 16:14:10 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 16:31:31 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ char	*get_cmd_path(t_env *env, char **envp, int node_idx)
 	int		i;
 	int		size;
 	size_t	offset;
+	char	**cmdv;
 
 	i = 0;
 	while (envp[i] && !ft_strnstr(envp[i], "PATH", 4))
@@ -53,12 +54,13 @@ char	*get_cmd_path(t_env *env, char **envp, int node_idx)
 	size = ft_indchr(envp[i] + 5, ':'); // +5 to skip "PATH="
 	while (1)
 	{
+		cmdv = (char **)(env->data->buf + env->node[node_idx].data_idx);
 		if (size <= 0)
 			offset = arena_strlcpy(env->data, "./", 3);
 		else
 			offset = arena_strlcpy(env->data, envp + i, size);
-		env->data->used--;
-		arena_strlcpy(env->data, env->data->buf + env->node[node_idx].data_idx, ft_strlen(env->data->buf + env->node[node_idx].data_idx));
+		env->data->used--; // maybe add this to arena_strlcpy as arena_strlcat
+		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]));
 		if(check_path(env, env->data->buf + offset))
 			break ;
 		arena_restore(env->data, offset);
