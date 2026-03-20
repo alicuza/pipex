@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 21:40:54 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 22:13:49 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,10 @@ void	init_output_fd(t_env *env, int argc, char **argv, size_t i)
 	}
 }
 
-void handle_fds(t_env *env)
+void handle_fds(t_env *env, size_t i)
 {
-	close(env->pipe_fd[0]);
+	if (i != env->node_cnt - 1)
+		close(env->pipe_fd[0]);
 	dup2(env->input_fd, 0);
 	dup2(env->output_fd, 1);
 	close(env->input_fd);
@@ -104,13 +105,19 @@ void prepare_next_fds(t_env *env)
 int	get_status(t_env *env, int pid)
 {
 	int		tmp;
+	int		tmp_pid;
 	int		status;
 	size_t	i;
 
-	i = 0;
-	while (i < env->node_cnt)
-		if (pid == wait(&tmp))
+	i = -1;
+	while (++i < env->node_cnt)
+	{
+		tmp_pid = wait(&tmp);
+		if (tmp_pid == pid)
 			status = tmp;
+		else if (tmp_pid < 0)
+			break ;
+	}
 	return(status);
 }
 /*
@@ -149,13 +156,12 @@ int	execute(t_env *env, int argc, char** argv, char **envp)
 		pid = fork();
 		if (is_child(pid))
 		{
-			handle_fds(env);
+			handle_fds(env, i);
 			execve(cmd_path, cmd_argv, envp);
 		}
 		prepare_next_fds(env);
 		i++;
 	}
-	close(env->input_fd);
 	return (get_status(env, pid));
 }
 
