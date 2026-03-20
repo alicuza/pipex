@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 14:06:19 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 16:01:22 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "arena/arena.h"
 # include <fcntl.h>
 # include <sys/wait.h>
-# define SIZE 104096
+# define SIZE 4096
 # define STDIN 0
 # define STDOUT 1
 # define PIPEIN 1
@@ -47,7 +47,7 @@ typedef struct s_env
 	int		pipe_fd[2];
 	int		input_fd;
 	int		output_fd;
-	int		last_status;
+	int		exit_status;
 }	t_env;
 
 size_t	get_cmdv_idx(t_arena *dest, size_t start_idx, size_t arg_cnt);

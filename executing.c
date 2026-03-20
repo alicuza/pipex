@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 14:48:40 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 16:14:10 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,24 @@ int	get_path_idx(char **envp)
 	return (-1);
 }
 
+int	check_path(t_env *env, char *path)
+{
+	if (access(path, F_OK) == -1)
+	{
+		write(2, "pipex: error1\n", 14);
+		env->exit_status = 127;
+	}
+	else if (access(path, X_OK) == -1)
+	{
+		write(2, "pipex: error2\n", 14);
+		env->exit_status = 126;
+	}
+	return (env->exit_status);
+}
+
 char	*get_cmd_path(t_env *env, char **envp, int node_idx)
 {
 	int		i;
-	int		save;
 	int		size;
 	size_t	offset;
 
@@ -40,40 +54,18 @@ char	*get_cmd_path(t_env *env, char **envp, int node_idx)
 	while (1)
 	{
 		if (size <= 0)
-		{
-			save = arena_save(env->data);
 			offset = arena_strlcpy(env->data, "./", 3);
-			env->data->used--;
-			arena_strlcpy(env->data, env->data->buf + env->node[node_idx].data_idx, ft_strlen(env->data->buf + env->node[node_idx].data_idx));
-		}
 		else
-		{
-			save = arena_save(env->data);
 			offset = arena_strlcpy(env->data, envp + i, size);
-			env->data->used--;
-			arena_strlcpy(env->data, env->data->buf + env->node[node_idx].data_idx, ft_strlen(env->data->buf + env->node[node_idx].data_idx));
-		}
+		env->data->used--;
+		arena_strlcpy(env->data, env->data->buf + env->node[node_idx].data_idx, ft_strlen(env->data->buf + env->node[node_idx].data_idx));
+		if(check_path(env, env->data->buf + offset))
+			break ;
+		arena_restore(env->data, offset);
 		size = ft_indchr(envp[i] + size, ':');
 	}
 	return (env->data->buf + offset);
 }
-//		check_path(); // TODO maybe put everything in there
-/*		errno = 0; // check how error handling should be here
-		if (access(env->data[offset], F_OK) == -1)
-		{
-			error = strerror(err);
-			write(2, "pipex: ", 7);
-			write(2, error, ft_strlen(error));
-			write(2, "\n", 1);
-			env->last_status = 127;
-			if (access(env->data[offset], F_OK | X_OK) == -1)
-				env->last_status = 126;
-			arena_restore(save);
-		}
-		else
-		{
-			env->last_status = 0;
-*/
 
 void	init_output_fd(t_env *env, int argc, char **argv, size_t i)
 {
