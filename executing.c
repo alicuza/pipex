@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 13:36:41 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 14:48:40 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,65 +26,54 @@ int	get_path_idx(char **envp)
 	return (-1);
 }
 
-char	*get_cmd_path(t_env *env, /*char **argv,*/ char **paths, int node_idx)
+char	*get_cmd_path(t_env *env, char **envp, int node_idx)
 {
 	int		i;
 	int		save;
 	int		size;
-//	char	*error;
 	size_t	offset;
-	int		done;
 
 	i = 0;
-	while (paths[i])
+	while (envp[i] && !ft_strnstr(envp[i], "PATH", 4))
+		i++;
+	size = ft_indchr(envp[i] + 5, ':'); // +5 to skip "PATH="
+	while (1)
 	{
-		done = 0;
-		size = ft_indchr(paths[i], ':');
-		if (size)
-		{
-			save = arena_save(env->data);
-			offset = arena_strlcpy(env->data, paths + i, size);
-			env->data->used--;
-			arena_strlcpy(env->data, env->data->buf + env->node[node_idx].data_idx, ft_strlen(env->data->buf + env->node[node_idx].data_idx));
-//			check_path(); // TODO maybe put everything in there
-/*			errno = 0; // check how error handling should be here
-			if (access(env->data[offset], F_OK) == -1)
-			{
-				error = strerror(err);
-				write(2, "pipex: ", 7);
-				write(2, error, ft_strlen(error));
-				write(2, "\n", 1);
-				env->last_status = 127;
-				if (access(env->data[offset], F_OK | X_OK) == -1)
-					env->last_status = 126;
-				arena_restore(save);
-			}
-			else
-			{
-				env->last_status = 0;
-			}
-*/			i += size;
-		}
-		else if (!done) // remove redundant checks, if there are multiple empty paths in PATH
+		if (size <= 0)
 		{
 			save = arena_save(env->data);
 			offset = arena_strlcpy(env->data, "./", 3);
 			env->data->used--;
 			arena_strlcpy(env->data, env->data->buf + env->node[node_idx].data_idx, ft_strlen(env->data->buf + env->node[node_idx].data_idx));
-//			check_path(); // TODO maybe put everything in there
-/*			errno = 0; // check how error handling should be here
-			if (access(env->data[offset], F_OK) == -1)
-			{
-				env->last_status = 127;
-				if (access(env->data[offset], F_OK | X_OK) == -1)
-					env->last_status = 126;
-				arena_restore(save);
-			}
-			done = 1;
-*/		}
+		}
+		else
+		{
+			save = arena_save(env->data);
+			offset = arena_strlcpy(env->data, envp + i, size);
+			env->data->used--;
+			arena_strlcpy(env->data, env->data->buf + env->node[node_idx].data_idx, ft_strlen(env->data->buf + env->node[node_idx].data_idx));
+		}
+		size = ft_indchr(envp[i] + size, ':');
 	}
 	return (env->data->buf + offset);
 }
+//		check_path(); // TODO maybe put everything in there
+/*		errno = 0; // check how error handling should be here
+		if (access(env->data[offset], F_OK) == -1)
+		{
+			error = strerror(err);
+			write(2, "pipex: ", 7);
+			write(2, error, ft_strlen(error));
+			write(2, "\n", 1);
+			env->last_status = 127;
+			if (access(env->data[offset], F_OK | X_OK) == -1)
+				env->last_status = 126;
+			arena_restore(save);
+		}
+		else
+		{
+			env->last_status = 0;
+*/
 
 void	init_output_fd(t_env *env, int argc, char **argv, size_t i)
 {

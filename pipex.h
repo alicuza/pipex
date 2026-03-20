@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 13:26:18 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 14:06:19 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "arena/arena.h"
 # include <fcntl.h>
 # include <sys/wait.h>
-# define SIZE 1024
+# define SIZE 104096
 # define STDIN 0
 # define STDOUT 1
 # define PIPEIN 1
