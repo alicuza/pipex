@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 23:23:05 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 23:51:08 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
 	size_t	offset;
 	char	**cmdv;
 
-
 	env_off = 5;
 	size = 0;
 	if (path_var)
@@ -61,13 +60,9 @@ char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
 		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]) + 1);
 		if(!check_path(env->data->buf + offset))
 			break ;
-//		ft_printf("testing PATH: %s\n", path_var); // delete this, only for debugging
-//		ft_printf("testing path: %s\n", env->data->buf + offset); // delete this, only for debugging
 		arena_restore(env->data, offset);
 		env_off += size + 1;
-//		ft_printf("next command at index: %d\n", env_off); // delete this, only for debugging
 		size = ft_indchr(path_var + env_off, ':');
-//		ft_printf("next ':' is so much further: %d\n", size); // delete this, only for debugging
 	}
 	return (env->data->buf + offset);
 }
@@ -123,21 +118,7 @@ int	get_status(t_env *env, int pid)
 	}
 	return(status);
 }
-/*
-char	*get_cmd(t_env *env, size_t idx, char **envp)
-{
-	int		i;
-	int		path_idx;
-	char	*path;
 
-	i = 0;
-	path_idx = get_path_idx(envp);
-	if (path_idx < 0) // no PATH in env
-		return (env->data->buf + arena_strlcpy(env->data, "./", 3));
-	get_cmd_path(env, argv, envp[path_idx]);
-	return (); // TODO:FINISH
-}
-*/
 int	is_child(int pid)
 {
 	return (!pid);
@@ -167,4 +148,3 @@ int	execute(t_env *env, int argc, char** argv, char **envp)
 	}
 	return (get_status(env, pid));
 }
-
