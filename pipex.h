@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/19 11:11:28 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 13:26:18 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "libft/ft_printf.h"
 # include "arena/arena.h"
 # include <fcntl.h>
+# include <sys/wait.h>
 # define SIZE 1024
 # define STDIN 0
 # define STDOUT 1
@@ -55,4 +56,5 @@ size_t	count_words(const char *s, char del); // MOVE TO LIBFT
 void	*ft_print_memory(void *addr, unsigned int size); // MOVE TO LIBFT
 //void	handle_exit(t_env *env, int status, char *message);
 void	parse_to_nodes(t_env *env, char **argv);
+int		execute(t_env *env, int argc, char** argv, char **envp);
 #endif

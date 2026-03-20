@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 20:05:14 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/19 11:51:48 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 11:14:31 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,20 @@
 	return (offset);
 }*/
 
-size_t	arena_memcpy(t_arena *dest, const void *src, size_t size)
+size_t	arena_memcpy(t_arena *dest, const void *src, size_t size, size_t align)
 {
 	size_t	offset;
 
-	offset = arena_alloc(dest, size);
+	offset = arena_alloc(dest, size, align);
 	ft_memcpy(dest->buf + offset, src, size);
 	return (offset);
 }
 
-size_t	arena_memset(t_arena *data, int c, size_t size)
+size_t	arena_memset(t_arena *data, int c, size_t size, size_t align)
 {
 	size_t	offset;
 
-	offset = arena_alloc(data, size);
+	offset = arena_alloc(data, size, align);
 	ft_memset(data->buf + offset, c, size);
 	return (offset);
 }
@@ -45,7 +45,7 @@ size_t	arena_strlcpy(t_arena *dest, const void *src, size_t size)
 {
 	size_t	offset;
 
-	offset = arena_alloc(dest, size);
+	offset = arena_alloc(dest, size, 1);
 	ft_strlcpy(dest->buf + offset, src, size);
 	return (offset);
 }
@@ -84,7 +84,7 @@ size_t	arena_split(t_arena *dest, const char *src, char del)
 	size_t	len;
 
 	word_cnt = count_words(src, del);
-	offset = arena_alloc(dest, (word_cnt + 1) * sizeof(char *));
+	offset = arena_alloc(dest, (word_cnt + 1) * sizeof(char *), _Alignof(char *));
 	i = 0;
 	while (i < word_cnt)
 	{

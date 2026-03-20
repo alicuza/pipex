@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/18 19:30:54 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 13:45:48 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,12 @@ int	main(int argc, char **argv, char **envp)
 	env = init_env(argc, argv, envp);
 	env.data = &arena;
 	parse_to_nodes(&env, argv);
-	for (size_t i = 0; i < env.node_cnt; i++)
+/*	for (size_t i = 0; i < env.node_cnt; i++)
 	{
 		char **cmdv = (char **)(env.data->buf + env.node[i].data_idx);
 		for (size_t j = 0; cmdv[j]; j++)
 			    printf("node[%zu] argv[%zu]=%s\n", i, j, cmdv[j]);
 	}
-
 	ft_print_memory(env.data->buf, 800);
+*/	execute(&env, argc, argv, envp);
 }
