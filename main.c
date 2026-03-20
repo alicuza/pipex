@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 13:45:48 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 17:22:18 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_env	init_env(int argc, char **argv, char** envp)
 	return (env);
 }
 
-#include <stdio.h>
+#include <stdio.h> // don't forget to delete this dude
 int	main(int argc, char **argv, char **envp)
 {
 	t_env	env;

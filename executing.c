@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 16:31:31 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 17:59:46 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,45 +26,54 @@ int	get_path_idx(char **envp)
 	return (-1);
 }
 
-int	check_path(t_env *env, char *path)
+int	check_path(char *path)
 {
-	if (access(path, F_OK) == -1)
+	if (access(path, F_OK | X_OK) == -1)
 	{
 		write(2, "pipex: error1\n", 14);
-		env->exit_status = 127;
+		return (1);
 	}
-	else if (access(path, X_OK) == -1)
-	{
-		write(2, "pipex: error2\n", 14);
-		env->exit_status = 126;
-	}
-	return (env->exit_status);
+	return (0);
 }
 
 char	*get_cmd_path(t_env *env, char **envp, int node_idx)
 {
 	int		i;
 	int		size;
+	int		env_off;
 	size_t	offset;
 	char	**cmdv;
 
 	i = 0;
 	while (envp[i] && !ft_strnstr(envp[i], "PATH", 4))
-		i++;
-	size = ft_indchr(envp[i] + 5, ':'); // +5 to skip "PATH="
+		i++;	// what if the envp is empty.
+	env_off = 5;
+	size = ft_indchr(envp[i] + env_off, ':'); // +5 to skip "PATH="
 	while (1)
 	{
 		cmdv = (char **)(env->data->buf + env->node[node_idx].data_idx);
 		if (size <= 0)
 			offset = arena_strlcpy(env->data, "./", 3);
 		else
-			offset = arena_strlcpy(env->data, envp + i, size);
+		{
+			offset = arena_strlcpy(env->data, envp[i] + env_off, size + 1);
+			if(env->data->buf[env->data->used - 2] != '/')
+			{
+				env->data->used--;
+				arena_strlcpy(env->data, "/", 2);
+			}
+		}
 		env->data->used--; // maybe add this to arena_strlcpy as arena_strlcat
-		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]));
-		if(check_path(env, env->data->buf + offset))
+		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]) + 1);
+		if(!check_path(env->data->buf + offset))
 			break ;
+		ft_printf("testing PATH: %s\n", envp[i]); // delete this, only for debugging
+		ft_printf("testing path: %s\n", env->data->buf + offset); // delete this, only for debugging
 		arena_restore(env->data, offset);
-		size = ft_indchr(envp[i] + size, ':');
+		env_off += size + 1;
+		ft_printf("next command at index: %d\n", env_off); // delete this, only for debugging
+		size = ft_indchr(envp[i] + env_off, ':');
+		ft_printf("next ':' at index: %d\n", size); // delete this, only for debugging
 	}
 	return (env->data->buf + offset);
 }
