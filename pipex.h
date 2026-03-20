@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 16:01:22 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 21:40:22 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ typedef struct s_env
 	int		exit_status;
 }	t_env;
 
-size_t	get_cmdv_idx(t_arena *dest, size_t start_idx, size_t arg_cnt);
 size_t	word_len(const char *s, char del); // SHOULD BE IN LIBFT
 size_t	count_words(const char *s, char del); // MOVE TO LIBFT
 void	*ft_print_memory(void *addr, unsigned int size); // MOVE TO LIBFT

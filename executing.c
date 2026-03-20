@@ -6,57 +6,48 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 17:59:46 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/20 21:40:54 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	get_path_idx(char **envp)
+char	*get_path_var(char **envp)
 {
 	int	i;
 
 	i = 0;
-	while (envp && envp[i])
+	while (envp[i])
 	{
 		if (ft_strnstr(envp[i], "PATH", 4))
-			return (i);
+			return (envp[i]);
 		i++;
 	}
-	return (-1);
+	return (NULL);
 }
 
 int	check_path(char *path)
 {
-	if (access(path, F_OK | X_OK) == -1)
-	{
-		write(2, "pipex: error1\n", 14);
-		return (1);
-	}
-	return (0);
+	return (access(path, F_OK | X_OK) == -1);
 }
 
-char	*get_cmd_path(t_env *env, char **envp, int node_idx)
+char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
 {
-	int		i;
 	int		size;
 	int		env_off;
 	size_t	offset;
 	char	**cmdv;
 
-	i = 0;
-	while (envp[i] && !ft_strnstr(envp[i], "PATH", 4))
-		i++;	// what if the envp is empty.
 	env_off = 5;
-	size = ft_indchr(envp[i] + env_off, ':'); // +5 to skip "PATH="
-	while (1)
+	size = ft_indchr(path_var + env_off, ':'); // +5 to skip "PATH="
+	while (path_var + env_off)
 	{
 		cmdv = (char **)(env->data->buf + env->node[node_idx].data_idx);
 		if (size <= 0)
 			offset = arena_strlcpy(env->data, "./", 3);
 		else
 		{
-			offset = arena_strlcpy(env->data, envp[i] + env_off, size + 1);
+			offset = arena_strlcpy(env->data, path_var + env_off, size + 1);
 			if(env->data->buf[env->data->used - 2] != '/')
 			{
 				env->data->used--;
@@ -67,13 +58,13 @@ char	*get_cmd_path(t_env *env, char **envp, int node_idx)
 		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]) + 1);
 		if(!check_path(env->data->buf + offset))
 			break ;
-		ft_printf("testing PATH: %s\n", envp[i]); // delete this, only for debugging
+		ft_printf("testing PATH: %s\n", path_var); // delete this, only for debugging
 		ft_printf("testing path: %s\n", env->data->buf + offset); // delete this, only for debugging
 		arena_restore(env->data, offset);
 		env_off += size + 1;
 		ft_printf("next command at index: %d\n", env_off); // delete this, only for debugging
-		size = ft_indchr(envp[i] + env_off, ':');
-		ft_printf("next ':' at index: %d\n", size); // delete this, only for debugging
+		size = ft_indchr(path_var + env_off, ':');
+		ft_printf("next ':' is so much further: %d\n", size); // delete this, only for debugging
 	}
 	return (env->data->buf + offset);
 }
@@ -153,7 +144,7 @@ int	execute(t_env *env, int argc, char** argv, char **envp)
 	while(i < env->node_cnt)
 	{
 		cmd_argv = get_arena_ptr(env->data, env->node[i].data_idx);
-		cmd_path = get_cmd_path(env, envp, i);
+		cmd_path = get_cmd_path(env, get_path_var(envp), i);
 		init_output_fd(env, argc, argv, i);
 		pid = fork();
 		if (is_child(pid))
