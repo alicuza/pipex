@@ -58,11 +58,11 @@ char	*find_in_path(t_arena *data, char *path_var, char *cmd)
 		size = ft_strlen(path_var + env_off);
 	while (*path_var)
 	{
-		get_prefix(env->data, path_var, env_off, size);
-		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]) + 1);
-		if(!check_path(env->data->buf + offset))
+		get_prefix(data, path_var, env_off, size);
+		arena_strlcpy(data, cmd, ft_strlen(cmdv[0]) + 1);
+		if(!check_path(data->buf + offset))
 			break ;
-		arena_restore(env->data, offset);
+		arena_restore(data, offset);
 		if (path_var[env_off + size] == '\0')
 			break ;
 		env_off += size + 1;
@@ -70,7 +70,7 @@ char	*find_in_path(t_arena *data, char *path_var, char *cmd)
 		if (size == -1)
 			size = ft_strlen(path_var + env_off);
 	}
-	return (env->data->buf + offset);
+	return (data->buf + offset);
 }
 
 char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
@@ -79,11 +79,16 @@ char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
 	char	**cmdv;
 
 	cmdv = (char **)(env->data->buf + env->node[node_idx].data_idx);
+	if (!cmdv[0])
+	{
+		ft_putstr_fd("pipex: : command not found\n", 2);
+		return ("");
+	}
 	if (ft_strchr(cmdv[0], '/'))
 		return (cmdv[0]);
 	if (!path_var)
 	{
-		offset = build_prefix(env->data, NULL, 0, 0);
+		offset = get_prefix(env->data, NULL, 0, 0);
 		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]) + 1);
 		return (env->data->buf + offset);
 	}
@@ -160,13 +165,18 @@ int	execute(t_env *env, int argc, char** argv, char **envp)
 	while(i < env->node_cnt)
 	{
 		cmd_argv = get_arena_ptr(env->data, env->node[i].data_idx);
-		if ()
+		if (!cmd_argv) // TODO finish error handling
 		cmd_path = get_cmd_path(env, get_path_var(envp), i);
 		init_output_fd(env, argc, argv, i);
 		pid = fork();
 		if (is_child(pid))
 		{
 			handle_fds(env, i);
+			if (!cmdv[0])
+			{
+				ft_printf("pipex: : command not found\n"); // or write to stderr
+				exit(127);
+			}
 			execve(cmd_path, cmd_argv, envp);
 		}
 		prepare_next_fds(env);
