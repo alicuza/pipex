@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 21:39:37 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/21 21:42:44 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/21 23:33:18 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*get_path_var(char **envp)
 	return (NULL);
 }
 
-int	check_path(char *path)
+static inline int	check_path(char *path)
 {
 	return (access(path, F_OK | X_OK) != -1);
 }

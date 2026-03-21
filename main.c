@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/21 21:33:12 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/21 23:38:43 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	read_here_doc(t_env *env, char *del)
 	while (1)
 	{
 		ft_putstr_fd("> ", 1);
-		line = get_next_line(1);
+		line = get_next_line(STDIN);
 		if (!line)
 			break ;
 		if (!ft_strncmp(line, del, ft_strlen(del))
@@ -46,10 +46,10 @@ void	read_here_doc(t_env *env, char *del)
 
 void	init_nodes(t_env *env, int argc, char **argv)
 {
-	if (ft_strnstr(argv[1], "here_doc", 8))
+	if (!ft_strncmp(argv[1], "here_doc", 9))
 	{
 		env->node_cnt = argc - 4;
-		env->input_fd = STDIN;
+		env->mode = HERE_DOC;
 		read_here_doc(env, argv[2]);
 	}
 	else
@@ -71,7 +71,10 @@ t_env	init_env(int argc, char **argv)
 	t_env	env;
 
 	env = (t_env){0};
+	env.input_fd = -1;
 	env.output_fd = -1;
+	env.pipe_fd[PIPEIN] = -1;
+	env.pipe_fd[PIPEOUT] = -1;
 	init_nodes(&env, argc, argv);
 	return (env);
 }
@@ -92,7 +95,7 @@ int	main(int argc, char **argv, char **envp)
 	env.data = &arena;
 	arena_hook_cleanup(env.data, &pipex_cleanup, &env);
 	parse_to_nodes(&env, argv);
-	env.exit_data.status = execute(&env, argc, argv, envp);
+	env.status = execute(&env, argc, argv, envp);
 	pipex_cleanup(&env);
 	handle_exit(NULL, NULL, NULL, 0);
 }

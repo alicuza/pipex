@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/21 21:34:36 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/21 22:27:11 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,23 @@ typedef struct s_node
 
 typedef struct s_env
 {
-	t_arena		*data;
-	t_node		*node;
-	t_exit_data	exit_data;
-	size_t		node_cnt;
-	int			pipe_fd[2];
-	int			input_fd;
-	int			output_fd;
-	t_mode		mode;
+	t_arena	*data;
+	t_node	*node;
+	size_t	node_cnt;
+	int		pipe_fd[2];
+	int		input_fd;
+	int		output_fd;
+	int		status;
+	t_mode	mode;
 }	t_env;
 
 void	parse_to_nodes(t_env *env, char **argv);
 int		execute(t_env *env, int argc, char **argv, char **envp);
 void	pipex_cleanup(void *env);
 void	pipex_exit(t_env *env, char *name, char *message, int status);
+void	handle_fds(t_env *env, size_t idx);
+char	*get_cmd_path(t_env *env, char *path_var, int node_idx);
+char	*get_path_var(char **envp);
+void	init_output_fd(t_env *env, int argc, char **argv, size_t idx);
+void	prepare_next_fds(t_env *env, size_t cnt);
 #endif
