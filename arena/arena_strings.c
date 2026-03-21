@@ -101,7 +101,5 @@ size_t	arena_split(t_arena *dest, const char *src, char del)
 
 void	*get_arena_ptr(t_arena *arena, size_t idx)
 {
-	if (!(arena->buf + idx))
-		return (NULL); // TODO: decide if necessary
 	return (arena->buf + idx);
 }

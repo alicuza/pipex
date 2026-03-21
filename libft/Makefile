@@ -46,6 +46,7 @@ SRCS =	ft_isalpha.c \
 		ft_itoa.c \
 		ft_strmapi.c \
 		ft_striteri.c \
+		ft_print_memory.c \
 		ft_putchar_fd.c \
 		ft_putstr_fd.c \
 		ft_putendl_fd.c \
@@ -69,7 +70,8 @@ SRCS =	ft_isalpha.c \
 		ft_prt_int.c \
 		ft_put_nbr_base.c \
 		get_next_line.c \
-		get_next_line_utils.c
+		get_next_line_utils.c\
+		handle_exit.c
 
 OBJS = $(SRCS:.c=.o)
 DEPS = $(SRCS:.c=.d)

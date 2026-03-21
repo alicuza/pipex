@@ -15,13 +15,13 @@ CC = cc
 CFLAGS = -MMD -MP -Wall -Wextra -Werror
 LIBFT = ./libft/libft.a
 SRCS =	main.c \
-		ft_print_memory.c \
 		parsing.c \
+		executing.c \
+		shell_errors.c \
 		arena/arena_alloc_reset.c \
 		arena/arena_init_free.c \
 		arena/arena_save_restore.c \
-		arena/arena_strings.c \
-		executing.c
+		arena/arena_strings.c
 OBJS = $(SRCS:.c=.o)
 DEPS = $(SRCS:.c=.d)
 

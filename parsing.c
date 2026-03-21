@@ -11,24 +11,12 @@
 /* ************************************************************************** */
 
 #include "pipex.h"
-#define WORD_DEL 32
-#define PATH_DEL 58
 
 size_t	get_start_idx(t_env *env)
 {
-	size_t start_idx;
-
-	if (env->input_fd == STDIN)
-	{
-		env->node[0].type = HERE_DOC;
-		start_idx = 3;
-	}
-	else
-	{
-		env->node[0].type = REDIR_IN;
-		start_idx = 2;
-	}
-	return (start_idx);
+	if (env->mode == HERE_DOC)
+		return (3);
+	return (2);
 }
 
 void	parse_to_nodes(t_env *env, char **argv)
@@ -37,15 +25,13 @@ void	parse_to_nodes(t_env *env, char **argv)
 	size_t	i;
 
 	start_idx = get_start_idx(env);
-	env->node[0].data_idx = arena_split(env->data, argv[start_idx], WORD_DEL);
+	env->node[0].data_idx = arena_split(env->data, argv[start_idx], ' ');
 	start_idx++;
 	i = 0;
 	while (++i < env->node_cnt - 1)
 	{
-		env->node[i].type = PIPE;
-		env->node[i].data_idx = arena_split(env->data, argv[start_idx], WORD_DEL);
+		env->node[i].data_idx = arena_split(env->data, argv[start_idx], ' ');
 		start_idx++;
 	}
-	env->node[i].type = REDIR_OUT;
-	env->node[i].data_idx = arena_split(env->data, argv[start_idx], WORD_DEL);
+	env->node[i].data_idx = arena_split(env->data, argv[start_idx], ' ');
 }

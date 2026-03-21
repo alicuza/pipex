@@ -15,6 +15,8 @@
 # include "libft/libft.h"
 # include "libft/ft_printf.h"
 # include "arena/arena.h"
+# include <errno.h>
+# include <string.h>
 # include <fcntl.h>
 # include <sys/wait.h>
 # define SIZE 4096
@@ -22,38 +24,33 @@
 # define STDOUT 1
 # define PIPEIN 1
 # define PIPEOUT 0
+# define CMD_NOT_FOUND "command not found"
 
-typedef enum e_type
+typedef enum e_mode
 {
-	PIPE,
-	REDIR_IN,
-	REDIR_OUT,
+	DEFAULT,
 	HERE_DOC,
-}	t_type;
+}	t_mode;
 
 typedef struct s_node
 {
 	size_t		data_idx;
 	size_t		arg_cnt;
-	t_type	type;
 }	t_node;
 
 typedef struct s_env
 {
-	t_arena	*data;
-	t_node	*node;
-	size_t	hd_del_idx;
-	size_t	node_cnt;
-	int		pipe_fd[2];
-	int		input_fd;
-	int		output_fd;
-	int		exit_status;
+	t_arena		*data;
+	t_node		*node;
+	t_exit_data	exit_data;
+	size_t		node_cnt;
+	int			pipe_fd[2];
+	int			input_fd;
+	int			output_fd;
+	t_mode		mode;
 }	t_env;
 
-size_t	word_len(const char *s, char del); // SHOULD BE IN LIBFT
-size_t	count_words(const char *s, char del); // MOVE TO LIBFT
-void	*ft_print_memory(void *addr, unsigned int size); // MOVE TO LIBFT
-//void	handle_exit(t_env *env, int status, char *message);
 void	parse_to_nodes(t_env *env, char **argv);
 int		execute(t_env *env, int argc, char** argv, char **envp);
+void	pipex_cleanup(void *env);
 #endif

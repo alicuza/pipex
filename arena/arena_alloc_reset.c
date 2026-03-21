@@ -12,6 +12,8 @@
 
 #include <unistd.h>
 #include "arena.h"
+#include <errno.h>
+#include <string.h>
 
 /*
  * natural alignment of 64bit systems is 8
@@ -28,7 +30,11 @@ size_t	arena_alloc(t_arena *arena, size_t size, size_t align)
 
 	arena_align(arena, align);
 	if (size > (arena->cap - arena->used))
-		handle_exit(EXIT_FAILURE, "arena_alloc: arena too small\n");
+	{
+		if (arena->clean)
+			arena->clean(arena->env);
+		handle_exit((t_exit_data){"arena", "alloc", strerror(ENOMEM), 1});
+	}
 	offset = arena->used;
 	arena->used += size;
 	return (offset);

@@ -31,6 +31,13 @@ typedef struct s_str
 	size_t	len;
 }	t_str;
 
+typedef struct s_exit_data
+{
+	char	*prefix;
+	char	*name;
+	char	*message;
+	int		status;
+}	t_exit_data;
 
 /* libc functions without external functions */
 
@@ -57,6 +64,8 @@ void	*ft_memchr(const void *s, int c, size_t n);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 int		ft_atoi(const char *nptr);
+size_t	word_len(const char *s, char del);
+size_t	count_words(const char *s, char del);
 
 /* libc functions that rely on malloc */
 
@@ -72,6 +81,7 @@ char	**ft_split(const char *s, char c);
 char	*ft_itoa(int n);
 char	*ft_strmapi(const char *s, char (*f)(unsigned int, char));
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
+void	*ft_print_memory(void *addr, unsigned int size);
 void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
@@ -88,4 +98,7 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+
+/* generic exit handling*/
+void	handle_exit(t_exit_data data);
 #endif

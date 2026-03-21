@@ -11,62 +11,91 @@
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include "libft/get_next_line.h"
+
+void	read_here_doc(t_env *env, char *del)
+{
+	char	*line;
+	int		pipe_fd[2];
+
+	if (pipe(pipe_fd) < 0)
+	{
+		env->exit_data = (t_exit_data){"pipex", "pipe", strerror(errno), 1};
+		pipex_cleanup(env);
+	}
+	while (1)
+	{
+		ft_putstr_fd("> ", 1);
+		line = get_next_line(1);
+		if (!line)
+			break ;
+		if (!ft_strncmp(line, del, ft_strlen(del))
+				&& line[ft_strlen(del)] == '\n')
+		{
+			free(line);
+			break ;
+		}
+		ft_putstr_fd(line, pipe_fd[1]);
+		free(line);
+	}
+	close(pipe_fd[1]);
+	env->input_fd = pipe_fd[0];
+}
 
 // decided against having a zero initialised stub at env->nodes[0] to return on failure,
 // because there are no allocations happening after the initialisation
 void	init_nodes(t_env *env, int argc, char **argv)
 {
-	if (!ft_strncmp(argv[1], "here_doc", 8)) // maybe think of a more robust way of checking for here_doc, ex: " here_doc" would fail here.
+	if (ft_strnstr(argv[1], "here_doc", 8))
 	{
 		env->node_cnt = argc - 4;
-		env->node = malloc(env->node_cnt * sizeof(t_node));
-		if (!env->node)
-			handle_exit(EXIT_FAILURE, "init_nodes1: malloc failed bro");
 		env->input_fd = STDIN;
-		env->hd_del_idx = 2;
+		read_here_doc(env, argv[2]);
 	}
 	else
 	{
 		env->node_cnt = argc - 3;
-		env->node = malloc(env->node_cnt * sizeof(t_node));
-		if (!env->node)
-			handle_exit(EXIT_FAILURE, "init_nodes2: malloc failed bro");
-		env->input_fd = open(argv[1], O_RDONLY); // checking whether this worked happens in the child
+		errno = 0;
+		env->input_fd = open(argv[1], O_RDONLY);
+		if (env->input_fd == -1)
+		{
+			env->exit_data = (t_exit_data){"pipex", argv[1], strerror(errno), 1};
+			pipex_cleanup(env);
+		}
+	}
+	errno = 0;
+	env->node = malloc(env->node_cnt * sizeof(t_node));
+	if (!env->node)
+	{
+		env->exit_data = (t_exit_data){"pipex", "malloc", strerror(errno), 1};
+		pipex_cleanup(env);
 	}
 }
 
-t_env	init_env(int argc, char **argv, char** envp)
+t_env	init_env(int argc, char **argv)
 {
-	(void) envp; // for testing, as of now unused
 	t_env	env;
 
 	env = (t_env){0};
-	env.output_fd = -1; // gets assigned in the cmd while loop
+	env.output_fd = -1;
 	init_nodes(&env, argc, argv);
 	return (env);
 }
 
-#include <stdio.h> // don't forget to delete this dude
 int	main(int argc, char **argv, char **envp)
 {
 	t_env	env;
 	t_arena	arena;
 
 	if (argc < 5)
-	{
-		ft_printf("Error: too few arguments:\nusage: ./pipex [opt: \"here_doc\" LIMITER] infile cmd_1 cmd_2 [opt: cmd_3 ... cmd_n] outfile\n");
-		return (1); // think of error codes or better yet, include errno and use it?
-	}
+		handle_exit((t_exit_data){"pipex", "main ", "usage: ./pipex [opt: \"here_doc\" LIMITER] infile cmd_1 cmd_2 [opt: cmd_3 ... cmd_n] outfile\n", 1});
+	errno = 0;
 	arena = arena_init(SIZE);
-	env = init_env(argc, argv, envp);
-	env.data = &arena;
+	if (!arena.buf)
+		handle_exit((t_exit_data){"pipex", "arena_init", strerror(errno), 1});
+	env = init_env(argc, argv);
+	arena_hook_cleanup(env.data, pipex_cleanup, &env);
 	parse_to_nodes(&env, argv);
-/*	for (size_t i = 0; i < env.node_cnt; i++)
-	{
-		char **cmdv = (char **)(env.data->buf + env.node[i].data_idx);
-		for (size_t j = 0; cmdv[j]; j++)
-			    printf("node[%zu] argv[%zu]=%s\n", i, j, cmdv[j]);
-	}
-	ft_print_memory(env.data->buf, 800);
-*/	return (execute(&env, argc, argv, envp));
+	env.exit_data.status = execute(&env, argc, argv, envp);
+	pipex_cleanup(&env);
 }

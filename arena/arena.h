@@ -15,13 +15,14 @@
 
 # include <stdlib.h>
 # include "../libft/libft.h"
-# define ALIGNMENT 8
 
 typedef struct s_arena
 {
 	char	*buf;
 	size_t	used;
 	size_t	cap;
+	void	(*clean)(void *);
+	void	*env;
 }	t_arena;
 
 t_arena	arena_init(size_t cap);
@@ -33,8 +34,7 @@ size_t	arena_strlcpy(t_arena *dest, const void *src, size_t size);
 size_t	arena_split(t_arena *dest, const char *src, char del);
 size_t	arena_save(t_arena *arena);
 void	arena_restore(t_arena *arena, size_t idx);
+void	arena_hook_cleanup(t_arena *arena, void (*clean)(void *), void *env);
 void	arena_free(t_arena *arena);
 void	*get_arena_ptr(t_arena *arena, size_t idx);
-
-void	handle_exit(int status, char *message);
 #endif

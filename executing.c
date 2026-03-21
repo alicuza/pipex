@@ -19,7 +19,7 @@ char	*get_path_var(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_strncmp(envp[i], "PATH=", 5))
+		if (!ft_strncmp(envp[i], "PATH=", 5))
 			return (envp[i]);
 		i++;
 	}
@@ -58,8 +58,8 @@ char	*find_in_path(t_arena *data, char *path_var, char *cmd)
 		size = ft_strlen(path_var + env_off);
 	while (*path_var)
 	{
-		get_prefix(data, path_var, env_off, size);
-		arena_strlcpy(data, cmd, ft_strlen(cmdv[0]) + 1);
+		offset = get_prefix(data, path_var, env_off, size);
+		arena_strlcpy(data, cmd, ft_strlen(cmd) + 1);
 		if(!check_path(data->buf + offset))
 			break ;
 		arena_restore(data, offset);
@@ -80,10 +80,7 @@ char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
 
 	cmdv = (char **)(env->data->buf + env->node[node_idx].data_idx);
 	if (!cmdv[0])
-	{
-		ft_putstr_fd("pipex: : command not found\n", 2);
-		return ("");
-	}
+		return (NULL);
 	if (ft_strchr(cmdv[0], '/'))
 		return (cmdv[0]);
 	if (!path_var)
@@ -95,14 +92,24 @@ char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
 	return (find_in_path(env->data, path_var, cmdv[0]));
 }
 
+static int	get_outfile_flags(t_env *env)
+{
+	if (env->mode == HERE_DOC)
+		return (O_CREAT | O_WRONLY | O_APPEND);
+	return (O_CREAT | O_WRONLY | O_TRUNC);
+}
+
 void	init_output_fd(t_env *env, int argc, char **argv, size_t i)
 {
 	if (i == env->node_cnt - 1)
 	{
-//		open_output(env, argc, argv); // maybe use this as a function to check for appending.
-		env->output_fd = open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		errno = 0;
+		env->output_fd = open(argv[argc - 1], get_outfile_flags(env), 0644);
 		if (env->output_fd < 0)
-			handle_exit(EXIT_FAILURE, "init_outpt_fd couldn't open the path"); // appropriate return code
+		{
+			env->exit_data = (t_exit_data){"pipex", argv[argc - 1], strerror(errno), 1};
+			pipex_cleanup(env);
+		}
 	}
 	else
 	{
@@ -154,31 +161,43 @@ int	is_child(int pid)
 	return (!pid);
 }
 
+void	child_execute(t_env *env, char **envp, size_t node_idx)
+{
+	char	**cmd_argv;
+	char	*cmd_path;
+
+	handle_fds(env, node_idx);
+	cmd_argv = get_arena_ptr(env->data, env->node[node_idx].data_idx);
+	if (!cmd_argv[0])
+	{
+		env->exit_data = (t_exit_data){"pipex", "", CMD_NOT_FOUND, 127};
+		pipex_cleanup(env);
+	}
+	cmd_path = get_cmd_path(env, get_path_var(envp), node_idx);
+	if (!cmd_path)
+	{
+		env->exit_data = (t_exit_data){"pipex", cmd_argv[0], CMD_NOT_FOUND, 127};
+		pipex_cleanup(env);
+	}
+	errno = 0;
+	execve(cmd_path, cmd_argv, envp);
+	env->exit_data = (t_exit_data){"pipex", cmd_argv[0], strerror(errno), 126};
+	pipex_cleanup(env);
+}
+
 int	execute(t_env *env, int argc, char** argv, char **envp)
 {
 	int		pid;
-	char	**cmd_argv;
-	char	*cmd_path;
 	size_t	i;
 
 	i = 0;
 	while(i < env->node_cnt)
 	{
-		cmd_argv = get_arena_ptr(env->data, env->node[i].data_idx);
-		if (!cmd_argv) // TODO finish error handling
-		cmd_path = get_cmd_path(env, get_path_var(envp), i);
+		errno = 0;
 		init_output_fd(env, argc, argv, i);
 		pid = fork();
 		if (is_child(pid))
-		{
-			handle_fds(env, i);
-			if (!cmdv[0])
-			{
-				ft_printf("pipex: : command not found\n"); // or write to stderr
-				exit(127);
-			}
-			execve(cmd_path, cmd_argv, envp);
-		}
+			child_execute(env, envp, i);
 		prepare_next_fds(env);
 		i++;
 	}
