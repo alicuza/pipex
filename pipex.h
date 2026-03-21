@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 21:40:22 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/21 21:34:36 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define STDOUT 1
 # define PIPEIN 1
 # define PIPEOUT 0
-# define CMD_NOT_FOUND "command not found"
+# define CMD_MISSING "command not found"
 
 typedef enum e_mode
 {
@@ -51,6 +51,7 @@ typedef struct s_env
 }	t_env;
 
 void	parse_to_nodes(t_env *env, char **argv);
-int		execute(t_env *env, int argc, char** argv, char **envp);
+int		execute(t_env *env, int argc, char **argv, char **envp);
 void	pipex_cleanup(void *env);
+void	pipex_exit(t_env *env, char *name, char *message, int status);
 #endif

@@ -1,27 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_exit.c                                      :+:      :+:    :+:   */
+/*   arena_pointer.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/21 20:24:18 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/21 21:22:04 by sancuta          ###   ########.fr       */
+/*   Created: 2026/03/21 20:27:38 by sancuta           #+#    #+#             */
+/*   Updated: 2026/03/21 20:27:55 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "arena.h"
 
-void	handle_exit(char *prefix, char *name, char *message, int status)
+void	*get_arena_ptr(t_arena *arena, size_t idx)
 {
-	if (status)
-	{
-		ft_putstr_fd(prefix, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putstr_fd(name, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putstr_fd(message, 2);
-		ft_putstr_fd("\n", 2);
-	}
-	exit(status);
+	return (arena->buf + idx);
 }

@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 09:27:38 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/19 10:33:16 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/21 21:27:19 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ size_t	arena_alloc(t_arena *arena, size_t size, size_t align)
 	{
 		if (arena->clean)
 			arena->clean(arena->env);
-		handle_exit((t_exit_data){"arena", "alloc", strerror(ENOMEM), 1});
+		handle_exit("arena", "alloc", strerror(ENOMEM), 1);
 	}
 	offset = arena->used;
 	arena->used += size;

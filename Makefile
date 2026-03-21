@@ -6,7 +6,7 @@
 #    By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 20:09:02 by sancuta           #+#    #+#              #
-#    Updated: 2026/03/20 11:01:39 by sancuta          ###   ########.fr        #
+#    Updated: 2026/03/21 21:42:08 by sancuta          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,13 +15,17 @@ CC = cc
 CFLAGS = -MMD -MP -Wall -Wextra -Werror
 LIBFT = ./libft/libft.a
 SRCS =	main.c \
+		path.c \
+		piping.c \
 		parsing.c \
 		executing.c \
 		shell_errors.c \
 		arena/arena_alloc_reset.c \
 		arena/arena_init_free.c \
 		arena/arena_save_restore.c \
-		arena/arena_strings.c
+		arena/arena_strings.c \
+		arena/arena_split.c \
+		arena/arena_pointer.c
 OBJS = $(SRCS:.c=.o)
 DEPS = $(SRCS:.c=.d)
 

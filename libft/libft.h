@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:39:55 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/09 12:26:04 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/21 21:21:04 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,5 +100,5 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 /* generic exit handling*/
-void	handle_exit(t_exit_data data);
+void	handle_exit(char *prefix, char *name, char *message, int status);
 #endif
