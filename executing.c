@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 23:51:08 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/21 12:00:28 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*get_path_var(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_strnstr(envp[i], "PATH", 4))
+		if (ft_strncmp(envp[i], "PATH=", 5))
 			return (envp[i]);
 		i++;
 	}
@@ -31,40 +31,63 @@ int	check_path(char *path)
 	return (access(path, F_OK | X_OK) == -1);
 }
 
-char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
+static size_t	get_prefix(t_arena *data, char *path_var, int env_off, int size)
+{
+	size_t	offset;
+
+	if (!path_var || !size)
+		return (arena_strlcpy(data, "./", 3));
+	offset = arena_strlcpy(data, path_var + env_off, size + 1);
+	if (data->buf[data->used - 2] != '/')
+	{
+		data->used--;
+		arena_strlcpy(data, "/", 2);
+	}
+	data->used--;
+	return (offset);
+}
+char	*find_in_path(t_arena *data, char *path_var, char *cmd)
 {
 	int		size;
 	int		env_off;
 	size_t	offset;
-	char	**cmdv;
 
 	env_off = 5;
-	size = 0;
-	if (path_var)
-		size = ft_indchr(path_var + env_off, ':'); // +5 to skip "PATH="
-	while (path_var && (path_var + env_off))
+	size = ft_indchr(path_var + env_off, ':');
+	if (size == -1)
+		size = ft_strlen(path_var + env_off);
+	while (*path_var)
 	{
-		cmdv = (char **)(env->data->buf + env->node[node_idx].data_idx);
-		if (size <= 0)
-			offset = arena_strlcpy(env->data, "./", 3);
-		else
-		{
-			offset = arena_strlcpy(env->data, path_var + env_off, size + 1);
-			if(env->data->buf[env->data->used - 2] != '/')
-			{
-				env->data->used--;
-				arena_strlcpy(env->data, "/", 2);
-			}
-		}
-		env->data->used--; // maybe add this to arena_strlcpy as arena_strlcat
+		get_prefix(env->data, path_var, env_off, size);
 		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]) + 1);
 		if(!check_path(env->data->buf + offset))
 			break ;
 		arena_restore(env->data, offset);
+		if (path_var[env_off + size] == '\0')
+			break ;
 		env_off += size + 1;
 		size = ft_indchr(path_var + env_off, ':');
+		if (size == -1)
+			size = ft_strlen(path_var + env_off);
 	}
 	return (env->data->buf + offset);
+}
+
+char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
+{
+	size_t	offset;
+	char	**cmdv;
+
+	cmdv = (char **)(env->data->buf + env->node[node_idx].data_idx);
+	if (ft_strchr(cmdv[0], '/'))
+		return (cmdv[0]);
+	if (!path_var)
+	{
+		offset = build_prefix(env->data, NULL, 0, 0);
+		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]) + 1);
+		return (env->data->buf + offset);
+	}
+	return (find_in_path(env->data, path_var, cmdv[0]));
 }
 
 void	init_output_fd(t_env *env, int argc, char **argv, size_t i)
@@ -100,22 +123,24 @@ void prepare_next_fds(t_env *env)
 	env->input_fd = env->pipe_fd[0];
 }
 
-int	get_status(t_env *env, int pid)
+int	get_status(int pid)
 {
 	int		tmp;
 	int		tmp_pid;
 	int		status;
-	size_t	i;
 
-	i = -1;
-	while (++i < env->node_cnt)
+	status = 0;
+	tmp_pid = wait(&tmp);
+	while (tmp_pid > 0)
 	{
-		tmp_pid = wait(&tmp);
 		if (tmp_pid == pid)
 			status = tmp;
-		else if (tmp_pid < 0)
-			break ;
+		tmp_pid = wait(&tmp);
 	}
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
 	return(status);
 }
 
@@ -135,6 +160,7 @@ int	execute(t_env *env, int argc, char** argv, char **envp)
 	while(i < env->node_cnt)
 	{
 		cmd_argv = get_arena_ptr(env->data, env->node[i].data_idx);
+		if ()
 		cmd_path = get_cmd_path(env, get_path_var(envp), i);
 		init_output_fd(env, argc, argv, i);
 		pid = fork();
@@ -146,5 +172,5 @@ int	execute(t_env *env, int argc, char** argv, char **envp)
 		prepare_next_fds(env);
 		i++;
 	}
-	return (get_status(env, pid));
+	return (get_status(pid));
 }
