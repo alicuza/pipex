@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 21:33:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/21 23:43:07 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/21 23:46:09 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ void	pipex_exit(t_env *env, char *name, char *message, int status)
 	}
 	if (env->pipe_fd[PIPEIN] != -1)
 	{
-		close(env->pipe_fd[PIPEOUT]);
-		env->pipe_fd[PIPEOUT] = -1;
+		close(env->pipe_fd[PIPEIN]);
+		env->pipe_fd[PIPEIN] = -1;
 	}
 	handle_exit("pipex", name, message, status);
 }

@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 09:41:35 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/20 11:12:49 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/21 23:47:27 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_arena
 
 t_arena	arena_init(size_t cap);
 size_t	arena_alloc(t_arena *arena, size_t size, size_t align);
-void	arena_clear(t_arena *arena);
+void	arena_reset(t_arena *arena);
 size_t	arena_memset(t_arena *data, int c, size_t size, size_t align);
 size_t	arena_memcpy(t_arena *dest, const void *src, size_t size, size_t align);
 size_t	arena_strlcpy(t_arena *dest, const void *src, size_t size);

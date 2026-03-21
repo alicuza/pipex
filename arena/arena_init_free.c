@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 08:36:13 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/18 11:00:36 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 00:16:16 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	arena_free(t_arena *arena)
 	arena->cap = 0;
 }
 
-void	arena_hook_cleanup(t_arena *arena, void (*clean)(void *), void *env)
+void	arena_hook_cleanup(t_arena *arena, void (*clean)(void *), void *env) // am i using this?
 {
 	arena->clean = clean;
 	arena->env = env;
