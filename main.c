@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/22 11:54:14 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 12:13:23 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,12 @@ void	init_nodes(t_env *env, int argc, char **argv)
 		pipex_exit(env, "malloc", strerror(errno), 1);
 }
 
-t_env	init_env(int argc, char **argv)
+t_env	init_env(t_arena *arena, int argc, char **argv)
 {
 	t_env	env;
 
 	env = (t_env){0};
+	env.data = arena;
 	env.input_fd = -1;
 	env.output_fd = -1;
 	env.pipe_fd[PIPEIN] = -1;
@@ -94,8 +95,7 @@ int	main(int argc, char **argv, char **envp)
 	arena = arena_init(SIZE);
 	if (!arena.buf)
 		pipex_exit(&env, "arena_init", strerror(errno), 1);
-	env = init_env(argc, argv);
-	env.data = &arena;
+	env = init_env(&arena, argc, argv);
 	arena_hook_cleanup(env.data, &pipex_cleanup, &env);
 	parse_to_nodes(&env, argv);
 	env.status = execute(&env, argc, argv, envp);

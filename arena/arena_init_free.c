@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 08:36:13 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/22 00:16:16 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 12:21:57 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_arena	arena_init(size_t size)
 	arena = (t_arena){0};
 	if (!size)
 		return (arena);
-	arena.buf = malloc(size);
+	arena.buf = /*malloc(size)*/NULL;
 	if (!arena.buf)
 		return (arena);
 	ft_memset(arena.buf, 0, size);

@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 21:33:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/22 12:02:27 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 12:42:22 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,10 @@
 
 void	pipex_cleanup(void *env)
 {
-	t_env	*e;
-
-	e = (t_env *)env;
-	if (e)
+	if (env)
 	{
-		arena_free(e->data);
-		free(e->node);
+		arena_free(((t_env *)env)->data);
+		free(((t_env *)env)->node);
 	}
 	get_next_line(-255);
 }
