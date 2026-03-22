@@ -6,11 +6,12 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 21:33:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/21 23:46:09 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 12:02:27 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include "libft/get_next_line.h"
 
 void	pipex_cleanup(void *env)
 {
@@ -22,11 +23,11 @@ void	pipex_cleanup(void *env)
 		arena_free(e->data);
 		free(e->node);
 	}
+	get_next_line(-255);
 }
 
-void	pipex_exit(t_env *env, char *name, char *message, int status)
+void	pipex_close_fds(t_env *env)
 {
-	pipex_cleanup(env);
 	if (env->input_fd != -1)
 	{
 		close(env->input_fd);
@@ -47,5 +48,12 @@ void	pipex_exit(t_env *env, char *name, char *message, int status)
 		close(env->pipe_fd[PIPEIN]);
 		env->pipe_fd[PIPEIN] = -1;
 	}
-	handle_exit("pipex", name, message, status);
+}
+
+void	pipex_exit(t_env *env, char *name, char *message, int status)
+{
+	handle_exit_msg("pipex", name, message, status);
+	pipex_close_fds(env);
+	pipex_cleanup(env);
+	exit(status);
 }
