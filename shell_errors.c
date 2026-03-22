@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 21:33:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/22 12:42:22 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 13:02:58 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,13 @@
 
 void	pipex_cleanup(void *env)
 {
-	if (env)
+	t_env	*e;
+
+	e = (t_env *)env;
+	if (e)
 	{
-		arena_free(((t_env *)env)->data);
-		free(((t_env *)env)->node);
+		arena_free(e->data);
+		free(e->node);
 	}
 	get_next_line(-255);
 }
@@ -50,7 +53,10 @@ void	pipex_close_fds(t_env *env)
 void	pipex_exit(t_env *env, char *name, char *message, int status)
 {
 	handle_exit_msg("pipex", name, message, status);
-	pipex_close_fds(env);
-	pipex_cleanup(env);
+	if (env)
+	{
+		pipex_close_fds(env);
+		pipex_cleanup(env);
+	}
 	exit(status);
 }

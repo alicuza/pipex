@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/22 12:13:23 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 12:58:46 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	main(int argc, char **argv, char **envp)
 	errno = 0;
 	arena = arena_init(SIZE);
 	if (!arena.buf)
-		pipex_exit(&env, "arena_init", strerror(errno), 1);
+		pipex_exit(NULL, "arena_init", strerror(errno), 1);
 	env = init_env(&arena, argc, argv);
 	arena_hook_cleanup(env.data, &pipex_cleanup, &env);
 	parse_to_nodes(&env, argv);
