@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 12:37:54 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/22 12:58:46 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 17:48:23 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	init_nodes(t_env *env, int argc, char **argv)
 	{
 		env->node_cnt = argc - 4;
 		env->mode = HERE_DOC;
+		env->input_fd = STDIN;
 		read_here_doc(env, argv[2]);
 	}
 	else
@@ -58,7 +59,7 @@ void	init_nodes(t_env *env, int argc, char **argv)
 		errno = 0;
 		env->input_fd = open(argv[1], O_RDONLY);
 		if (env->input_fd == -1)
-			pipex_exit(env, argv[1], strerror(errno), 1);
+			handle_status_msg("pipex", argv[1], strerror(errno), 1);
 	}
 	errno = 0;
 	env->node = malloc(env->node_cnt * sizeof(t_node));
@@ -87,7 +88,7 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc < 5)
 	{
-		handle_exit_msg("pipex", "main",
+		handle_status_msg("pipex", "main",
 			"usage: ./pipex infile cmd_1 cmd_2 outfile", 1);
 		exit(1);
 	}

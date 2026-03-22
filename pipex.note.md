@@ -13,6 +13,8 @@
 if a command is not found in PATH, bash looks for `function command_not_found_handle()` and executes it, otherwise it returns an error: [https://www.gnu.org/software/bash/manual/bash.html#Command-Search-and-Execution](Bash Reference Manual - Command, Search and Execution).
 **PARSING**
 [https://mywiki.wooledge.org/BashParser](Bash Parsing).
+**ERRO HANDLING**
+- don't exit on failure from the in or outfile!! [TODO]()
 # vim
 ## config
 - use `ctag -R .` in the project root -> generates `tags` file

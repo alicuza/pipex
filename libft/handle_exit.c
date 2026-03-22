@@ -6,13 +6,13 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 20:24:18 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/22 11:37:36 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 17:45:04 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	handle_exit_msg(char *prefix, char *name, char *message, int status)
+void	handle_status_msg(char *prefix, char *name, char *message, int status)
 {
 	if (status)
 	{

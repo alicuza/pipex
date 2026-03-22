@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 21:41:15 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/21 23:42:25 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 17:55:09 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	init_output_fd(t_env *env, int argc, char **argv, size_t idx)
 		errno = 0;
 		env->output_fd = open(argv[argc - 1], get_outfile_flags(env), 0644);
 		if (env->output_fd < 0)
-			pipex_exit(env, argv[argc - 1], strerror(errno), 1);
+			handle_status_msg("pipex", argv[argc - 1], strerror(errno), 1);
 	}
 	else
 	{
