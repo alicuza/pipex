@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 21:39:37 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/21 23:33:18 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/22 19:01:10 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,18 @@ size_t	get_prefix(t_arena *data, char *path_var, int env_off, int size)
 	size_t	offset;
 
 	if (!path_var || !size)
-		return (arena_strlcpy(data, "./", 3));
+	{
+		offset = arena_strlcpy(data, "./", 3);
+		data->used--;
+		return (offset);
+	}
 	offset = arena_strlcpy(data, path_var + env_off, size + 1);
+	data->used--;
 	if (data->buf[data->used - 2] != '/')
 	{
-		data->used--;
 		arena_strlcpy(data, "/", 2);
+		data->used--;
 	}
-	data->used--;
 	return (offset);
 }
 
@@ -62,7 +66,7 @@ char	*find_in_path(t_arena *data, char *path_var, char *cmd)
 		offset = get_prefix(data, path_var, env_off, size);
 		arena_strlcpy(data, cmd, ft_strlen(cmd) + 1);
 		if (check_path(data->buf + offset))
-			break ;
+			return (data->buf + offset);
 		arena_restore(data, offset);
 		if (path_var[env_off + size] == '\0')
 			break ;
@@ -71,7 +75,7 @@ char	*find_in_path(t_arena *data, char *path_var, char *cmd)
 		if (size == -1)
 			size = ft_strlen(path_var + env_off);
 	}
-	return (data->buf + offset);
+	return (NULL);
 }
 
 char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
@@ -88,7 +92,9 @@ char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
 	{
 		offset = get_prefix(env->data, NULL, 0, 0);
 		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]) + 1);
-		return (env->data->buf + offset);
+		if (check_path(env->data->buf + offset))
+			return (env->data->buf + offset);
+		return (NULL);
 	}
 	return (find_in_path(env->data, path_var, cmdv[0]));
 }
