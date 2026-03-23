@@ -101,6 +101,9 @@ The output is **appended** to `outfile` rather than truncated.
 - **PATH unset, non-executable file:** when `PATH` is unset and a file exists in
   the current directory but is not executable, pipex exits 126, but doesn't attempt
   to re-execute it as a shell script, like bash.
+- **Fixed arena buffer size:** the arena is limited to a 4KB buffer at the moment.
+- **here-doc written directly to pipe:** limits the amount of data able to be
+  handled to 64KB
 
 ---
 
@@ -165,6 +168,8 @@ array, the project uses a custom **Linear Arena Allocator** (`t_arena`).
 - **Efficient rollbacks:** `arena_save` and `arena_restore` allow the program to
   temporarily write strings to the arena (e.g. during path resolution) and rewind
   the pointer on failure, with no fragmentation.
+- **Limitations:** The arena buffer is only 4 KB in size, there is no `arena_reinit()`
+  that would increase the size of the arena, when it fills up.
 
 ---
 
@@ -252,6 +257,9 @@ The read end is then stored as `env->input_fd`, making it the stdin source for
 the first child exactly as a regular infile would be.
 
 The output file is opened with `O_APPEND` instead of `O_TRUNC` in here_doc mode.
+
+**Limitation:** here-docs is written directly to the pipe buffer, so it can only
+handle 64KB of data before locking. I intend to improve this in `minishell`.
 
 ---
 
