@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/23 03:40:50 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 04:13:35 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	get_status(int pid)
 		}
 		if (pid == -1 && errno == EINTR)
 			continue ;
-		break;
+		break ;
 	}
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
@@ -39,14 +39,14 @@ int	get_status(int pid)
 	return (status);
 }
 
-void	setup_fds(t_env *env, size_t node_idx, int argc, char **argv)
+void	setup_fds(t_env *env, size_t node_idx, char *file)
 {
 	if (node_idx == env->node_cnt - 1)
 	{
 		errno = 0;
-		env->output_fd = open(argv[argc - 1], get_outfile_flags(env), 0644);
+		env->output_fd = open(file, get_outfile_flags(env), 0644);
 		if (env->output_fd < 0)
-			handle_status_msg("pipex", argv[argc - 1], strerror(errno), 1);
+			handle_status_msg("pipex", file, strerror(errno), 1);
 	}
 	if (handle_fds(env, node_idx))
 	{
@@ -55,12 +55,12 @@ void	setup_fds(t_env *env, size_t node_idx, int argc, char **argv)
 	}
 }
 
-void	child_execute(t_env *env, int argc, char **argv, char **envp, size_t node_idx)
+void	child_execute(t_env *env, char *outfile, char **envp, size_t node_idx)
 {
 	char	**cmd_argv;
 	char	*cmd_path;
 
-	setup_fds(env, node_idx, argc, argv);
+	setup_fds(env, node_idx, outfile);
 	cmd_argv = get_arena_ptr(env->data, env->node[node_idx].data_idx);
 	if (!cmd_argv[0])
 	{
@@ -92,7 +92,7 @@ int	execute(t_env *env, int argc, char **argv, char **envp)
 		if (pid == -1)
 			pipex_exit(env, "fork", strerror(errno), 1);
 		if (!pid)
-			child_execute(env, argc, argv, envp, i);
+			child_execute(env, argv[argc - 1], envp, i);
 		prepare_next_fds(env, i);
 		i++;
 	}
