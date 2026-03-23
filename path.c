@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 21:39:37 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/23 04:33:26 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 18:17:39 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ char	*get_cmd_path(t_env *env, char *path_var, int node_idx)
 	if (!path_var)
 	{
 		offset = get_prefix(env->data, NULL, 0, 0);
-		env->data->used--;
 		arena_strlcpy(env->data, cmdv[0], ft_strlen(cmdv[0]) + 1);
 		return (env->data->buf + offset);
 	}
