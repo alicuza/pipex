@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 21:39:37 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/23 03:47:47 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 03:52:55 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ char	*find_in_path(t_arena *data, char *path_var, char *cmd)
 	{
 		offset = get_prefix(data, path_var, env_off, size);
 		arena_strlcpy(data, cmd, ft_strlen(cmd) + 1);
-		if (access(data->buf + offset, F_OK | X_OK) != -1)
+		if (access(data->buf + offset, F_OK) != -1)
 			return (data->buf + offset);
 		arena_restore(data, offset);
 		if (path_var[env_off + size] == '\0')
