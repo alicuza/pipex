@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 17:39:27 by sancuta           #+#    #+#             */
-/*   Updated: 2026/01/25 15:46:25 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 15:08:54 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@
 # define BASE_HEX_L "0123456789abcdef"
 # define BASE_HEX_U "0123456789ABCDEF"
 
+# define VALID_FLAGS "-0#+ "
+# define VALID_CONV_SPEC "csdiupxX"
+
 typedef struct s_format_specifier
 {
 	int					field_width;
@@ -44,9 +47,9 @@ typedef struct s_format_specifier
 	int					conv_spec;
 }	t_form_spec;
 
-extern const char	g_valid_conv_spec[];
-extern const char	g_valid_flags[];
-extern const int	g_allowed_flags[];
+//extern const char	g_valid_conv_spec[];
+//extern const char	g_valid_flags[];
+//extern const int	g_allowed_flags[];
 
 int			ft_printf(const char *s, ...);
 t_form_spec	ft_get_form_spec(const char **s, const char *mask_set);
@@ -68,4 +71,5 @@ int			ft_form_spec_handler(t_form_spec *data, int flag, const char **s,
 				va_list *args);
 int			ft_check_form_spec(const char **s);
 int			ft_check_written(int *written, int len);
+int			*allowed_flags(void);
 #endif

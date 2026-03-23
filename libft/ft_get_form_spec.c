@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 23:52:35 by sancuta           #+#    #+#             */
-/*   Updated: 2025/12/14 06:16:10 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 15:03:31 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_form_spec	ft_get_form_spec(const char **s, const char *mask_set)
 		res.flag = (res.flag | FLAG_DOT) & ~FLAG_ZERO;
 	res.conv_spec = ft_get_conv_spec(s);
 	if (res.conv_spec != -1)
-		res.flag &= g_allowed_flags[ft_indchr(g_valid_conv_spec,
+		res.flag &= allowed_flags()[ft_indchr(VALID_CONV_SPEC,
 				res.conv_spec)];
 	return (res);
 }
@@ -67,7 +67,7 @@ static int	ft_get_conv_spec(const char **s)
 {
 	int	conv_spec;
 
-	if (ft_indchr(g_valid_conv_spec, **s) != -1)
+	if (ft_indchr(VALID_CONV_SPEC, **s) != -1)
 	{
 		conv_spec = **s;
 		(*s)++;

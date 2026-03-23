@@ -9,8 +9,8 @@ operator and basic redirections. It takes an input file, processes its contents
 through a series of shell commands, and outputs the result to an output file.
 
 The project goes beyond the mandatory requirements by natively supporting
-**multiple pipes** and **here_doc**, managing multiple child processes, file
-descriptors, and robust environment variable parsing.
+**multiple pipes** and **here_doc**, managing multiple child processes, and file
+descriptors.
 
 ---
 
@@ -99,10 +99,8 @@ The output is **appended** to `outfile` rather than truncated.
 - **Command parsing:** commands are split on spaces only. Quoted arguments
   (e.g. `"hello world"`) are not supported within a command string.
 - **PATH unset, non-executable file:** when `PATH` is unset and a file exists in
-  the current directory but is not executable, pipex exits 126. Bash re-executes
-  it as a shell script; pipex does not.
-- **Empty command string:** an empty command string exits 127.
-  Bash treats it as a no-op and returns the last command's exit code.
+  the current directory but is not executable, pipex exits 126, but doesn't attempt
+  to re-execute it as a shell script, like bash.
 
 ---
 
@@ -110,14 +108,13 @@ The output is **appended** to `outfile` rather than truncated.
 
 ### Architecture Overview
 
-To avoid scattered global variables and fragmented state, the program encapsulates
-the entire execution environment within a single `t_env` struct that is passed by
-pointer almost everywhere. This provides a single place to track and clean up
-every resource.
+The program encapsulates the entire execution environment within a single
+`t_env` struct that is passed by pointer almost everywhere. This provides
+a single place to track and clean up every resource.
 
 ```
 t_env
-├── t_arena    *data        — arena allocator holding all parsed command strings
+├── t_arena    *data        — arena holding all parsed command string arrays and pointers to those
 ├── t_node     *node        — array of parsed command nodes (one per pipeline stage)
 ├── size_t      node_cnt    — number of pipeline stages
 ├── int         pipe_fd[2]  — current pipe (PIPEOUT=0 read, PIPEIN=1 write)
@@ -132,14 +129,13 @@ t_env
 ### Core Data Structure
 
 Because memory is managed via an arena, `t_node` only needs to store an offset
-index. The command arguments are parsed and explicitly NULL-terminated directly
-in the arena buffer, ready to be passed to `execve`.
+index. The command arguments are parsed as string arrays, explicitly NULL-terminated
+directly in the arena buffer, ready to be passed to `execve`.
 
 ```c
 typedef struct s_node
 {
-	size_t	data_idx;   // offset into arena where argv array lives
-	size_t	arg_cnt;
+	size_t	data_idx;
 }	t_node;
 
 typedef struct s_env
@@ -189,9 +185,9 @@ as a null-terminated `char **`. The resulting array is retrieved later by its
 
 The core execution loop in `execute` processes each node sequentially:
 
-1. `init_output_fd` — creates a pipe if this is not the last node, otherwise
+1. `init_output_fd`: creates a pipe if this is not the last node, otherwise
    leaves `output_fd` as `-1` (the child opens the outfile itself).
-2. `fork` — spawns the child process.
+2. `fork`: spawns the child process.
 3. The parent calls `prepare_next_fds` to close its copy of the write end and
    store the read end as `input_fd` for the next iteration.
 
@@ -204,7 +200,7 @@ Each child calls `setup_fds` before executing:
 
 1. If this is the last node, the child opens the outfile and assigns it to
    `env->output_fd`. Failure is reported but execution continues.
-2. `handle_fds` dups `input_fd` → `STDIN` and `output_fd` → `STDOUT` if they
+2. `handle_fds` dups `input_fd` -> `STDIN` and `output_fd` -> `STDOUT` if they
    are valid (`> -1`), and closes all pipe ends the child does not need.
 3. `handle_fds` returns a non-zero value if either fd was `-1` (bad infile or
    bad outfile). The child then exits immediately without reaching `execve`,
@@ -218,15 +214,16 @@ Each child calls `setup_fds` before executing:
 
 - if the name contains a `/`, it is used as-is;
 - if `PATH` is unset, the command is looked up in `./`;
-- otherwise, `find_in_path` iterates over the colon-separated directories in
-  `PATH` and returns the first entry where `access(path, F_OK) != -1`.
+- otherwise, `find_in_path` iterates over the colon-separated directories
+  in `PATH` and returns the first command path constructed with this entry
+  where `access(path, F_OK) != -1`.
 
 The path is constructed directly in the arena buffer; `arena_restore` rewinds
 on each failed candidate with no allocations.
 
-Existence is checked with `F_OK` only, not `X_OK`. If the file exists but is
-not executable, it is passed to `execve` anyway — which then sets
-`errno = EACCES`. This lets the program correctly distinguish 126 from 127:
+Existence is checked with `F_OK` only, not `X_OK`. If the file exists but is not
+executable, it is passed to `execve` anyway, which then sets `errno = EACCES`.
+This lets the program correctly distinguish 126 from 127:
 
 ```c
 execve(cmd_path, cmd_argv, envp);
@@ -283,13 +280,13 @@ runs if the arena itself fails internally.
 
 ### Documentation and References
 
-- [`wait(2)`, `execve(2)`, `pipe(2)`, `dup2(2)`](https://man7.org/linux/man-pages/index.html) — Linux man pages;
-- [`errno` codes](https://man7.org/linux/man-pages/man3/errno.3.html) — for mapping `execve` failures to exit codes;
-- [GNU bash source](https://git.savannah.gnu.org/cgit/bash.git) — reference for matching bash pipeline and redirection behaviour;
+- [`wait(2)`, `execve(2)`, `pipe(2)`, `dup2(2)`](https://man7.org/linux/man-pages/index.html)
+- [`errno` codes](https://man7.org/linux/man-pages/man3/errno.3.html)
+- [GNU bash source](https://git.savannah.gnu.org/cgit/bash.git)
+- [Bash Reference Manual - Command, Search and Execution](https://www.gnu.org/software/bash/manual/bash.html#Command-Search-and-Execution)
+- [Andrew Kelley: A Practical Guide to Applying Data Oriented Design (DoD)](https://youtu.be/IroPQ150F6c)
+- [Casey Muratori | Smart-Pointers, RAII, ZII? Becoming an N+2 programmer](https://youtu.be/xt1KNDmOYqA)
 
 ### AI Usage
 
-AI tools were used in the following ways during this project:
-- debugging edge cases in exit code behaviour and comparing against bash's `strace` output;
-- discussing pipe fd lifecycle and redirection ordering;
-- drafting and refactoring README text;
+AI was used mainly for interactive rubber ducking and advanced search engine.
