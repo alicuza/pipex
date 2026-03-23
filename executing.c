@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/23 03:07:14 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 03:15:35 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	child_execute(t_env *env, int argc, char **argv, char **envp, size_t node_i
 	errno = 0;
 	execve(cmd_path, cmd_argv, envp);
 	if (errno == ENOENT)
-		pipex_exit(env, cmd_argv[0], strerror(errno), 127);
+		pipex_exit(env, cmd_argv[0], CMD_MISSING, 127);
 	pipex_exit(env, cmd_argv[0], strerror(errno), 126);
 }
 
