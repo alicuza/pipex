@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/21 22:27:11 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 03:04:30 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,10 @@ void	parse_to_nodes(t_env *env, char **argv);
 int		execute(t_env *env, int argc, char **argv, char **envp);
 void	pipex_cleanup(void *env);
 void	pipex_exit(t_env *env, char *name, char *message, int status);
-void	handle_fds(t_env *env, size_t idx);
+int		handle_fds(t_env *env, size_t idx);
 char	*get_cmd_path(t_env *env, char *path_var, int node_idx);
 char	*get_path_var(char **envp);
 void	init_output_fd(t_env *env, int argc, char **argv, size_t idx);
 void	prepare_next_fds(t_env *env, size_t cnt);
+int		get_outfile_flags(t_env *env);
 #endif

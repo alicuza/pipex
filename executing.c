@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/21 23:33:27 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 03:07:14 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,28 @@ int	get_status(int pid)
 	return (status);
 }
 
-static inline int	is_child(int pid)
+void	setup_fds(t_env *env, size_t node_idx, int argc, char **argv)
 {
-	return (!pid);
+	if (node_idx == env->node_cnt - 1)
+	{
+		errno = 0;
+		env->output_fd = open(argv[argc - 1], get_outfile_flags(env), 0644);
+		if (env->output_fd < 0)
+			handle_status_msg("pipex", argv[argc - 1], strerror(errno), 1);
+	}
+	if (handle_fds(env, node_idx))
+	{
+		pipex_cleanup(env);
+		exit(1);
+	}
 }
 
-void	child_execute(t_env *env, char **envp, size_t node_idx)
+void	child_execute(t_env *env, int argc, char **argv, char **envp, size_t node_idx)
 {
 	char	**cmd_argv;
 	char	*cmd_path;
 
-	handle_fds(env, node_idx);
+	setup_fds(env, node_idx, argc, argv);
 	cmd_argv = get_arena_ptr(env->data, env->node[node_idx].data_idx);
 	if (!cmd_argv[0])
 	{
@@ -56,6 +67,8 @@ void	child_execute(t_env *env, char **envp, size_t node_idx)
 	}
 	errno = 0;
 	execve(cmd_path, cmd_argv, envp);
+	if (errno == ENOENT)
+		pipex_exit(env, cmd_argv[0], strerror(errno), 127);
 	pipex_exit(env, cmd_argv[0], strerror(errno), 126);
 }
 
@@ -72,8 +85,8 @@ int	execute(t_env *env, int argc, char **argv, char **envp)
 		pid = fork();
 		if (pid == -1)
 			pipex_exit(env, "fork", strerror(errno), 1);
-		if (is_child(pid))
-			child_execute(env, envp, i);
+		if (!pid)
+			child_execute(env, argc, argv, envp, i);
 		prepare_next_fds(env, i);
 		i++;
 	}
