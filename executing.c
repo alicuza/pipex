@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/23 04:13:35 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 04:25:15 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	get_status(int pid)
 				status = tmp;
 			continue ;
 		}
-		if (pid == -1 && errno == EINTR)
+		if (tmp_pid == -1 && errno == EINTR)
 			continue ;
 		break ;
 	}
