@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:16:50 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/23 03:15:35 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 03:40:50 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,18 @@ int	get_status(int pid)
 	int		status;
 
 	status = 0;
-	tmp_pid = wait(&tmp);
-	while (tmp_pid > 0)
+	while (1)
 	{
-		if (tmp_pid == pid)
-			status = tmp;
 		tmp_pid = wait(&tmp);
+		if (tmp_pid > 0)
+		{
+			if (tmp_pid == pid)
+				status = tmp;
+			continue ;
+		}
+		if (pid == -1 && errno == EINTR)
+			continue ;
+		break;
 	}
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
