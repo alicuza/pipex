@@ -6,26 +6,11 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 13:55:17 by sancuta           #+#    #+#             */
-/*   Updated: 2025/12/14 15:33:09 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 14:55:03 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-const char	g_valid_flags[] = "-0#+ ";
-
-const char	g_valid_conv_spec[] = "csdiupxX";
-
-const int	g_allowed_flags[] = {
-	FLAG_MINUS,
-	FLAG_MINUS | FLAG_DOT,
-	FLAG_MINUS | FLAG_ZERO | FLAG_PLUS | FLAG_SPACE | FLAG_DOT,
-	FLAG_MINUS | FLAG_ZERO | FLAG_PLUS | FLAG_SPACE | FLAG_DOT,
-	FLAG_MINUS | FLAG_ZERO | FLAG_DOT,
-	FLAG_MINUS,
-	FLAG_MINUS | FLAG_ZERO | FLAG_HASH | FLAG_DOT,
-	FLAG_MINUS | FLAG_ZERO | FLAG_HASH | FLAG_DOT
-};
 
 static int	ft_prt_char(t_form_spec *data, int c);
 static int	ft_prt_str(t_form_spec *data, char *s);

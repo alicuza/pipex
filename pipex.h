@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 07:40:36 by sancuta           #+#    #+#             */
-/*   Updated: 2026/03/23 03:04:30 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/03/23 04:48:59 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ typedef enum e_mode
 typedef struct s_node
 {
 	size_t		data_idx;
-	size_t		arg_cnt;
 }	t_node;
 
 typedef struct s_env
