@@ -46,31 +46,44 @@ size_t	get_prefix(t_arena *data, char *path_var, int env_off, int size)
 	return (offset);
 }
 
-char	*find_in_path(t_arena *data, char *path_var, char *cmd)
+char	*get_first(t_arena *data, char *path, int *pos, char *cmd)
 {
-	int		size;
-	int		env_off;
 	size_t	offset;
 
+	if (pos[0] == -1)
+		return (NULL);
+	offset = get_prefix(data, path, pos[0], pos[1]);
+	arena_strlcpy(data, cmd, ft_strlen(cmd) + 1);
+	return (data->buf + offset);
+}
+
+char	*find_in_path(t_arena *data, char *path_var, char *cmd)
+{
+	int		env_off;
+	int		size;
+	int		first[2];
+	size_t	offset;
+
+	first[0] = -1;
 	env_off = 5;
-	size = ft_indchr(path_var + env_off, ':');
-	if (size == -1)
-		size = ft_strlen(path_var + env_off);
-	while (*path_var)
+	while (*path_var && path_var[env_off])
 	{
-		offset = get_prefix(data, path_var, env_off, size);
-		arena_strlcpy(data, cmd, ft_strlen(cmd) + 1);
-		if (access(data->buf + offset, F_OK) != -1)
-			return (data->buf + offset);
-		arena_restore(data, offset);
-		if (path_var[env_off + size] == '\0')
-			break ;
-		env_off += size + 1;
 		size = ft_indchr(path_var + env_off, ':');
 		if (size == -1)
 			size = ft_strlen(path_var + env_off);
+		offset = get_prefix(data, path_var, env_off, size);
+		arena_strlcpy(data, cmd, ft_strlen(cmd) + 1);
+		if (access(data->buf + offset, X_OK) != -1)
+			return (data->buf + offset);
+		if (first[0] == -1 && access(data->buf + offset, F_OK) != -1)
+		{
+			first[0] = env_off;
+			first[1] = size;
+		}
+		arena_restore(data, offset);
+		env_off += size + (path_var[env_off + size] != '\0');
 	}
-	return (NULL);
+	return (get_first(data, path_var, first, cmd));
 }
 
 char	*get_cmd_path(t_env *env, char *path_var, int node_idx)

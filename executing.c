@@ -73,6 +73,11 @@ void	child_execute(t_env *env, char *outfile, char **envp, size_t node_idx)
 	}
 	errno = 0;
 	execve(cmd_path, cmd_argv, envp);
+	if (errno == ENOEXEC)
+	{
+		pipex_cleanup(env);
+		exit(0);
+	}
 	if (errno == ENOENT)
 		pipex_exit(env, cmd_argv[0], CMD_MISSING, 127);
 	pipex_exit(env, cmd_argv[0], strerror(errno), 126);
